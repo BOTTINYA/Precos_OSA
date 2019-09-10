@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Created on 09/09/2019
+#!/usr/bin/env python
+# coding: utf-8
 
-@author: Yannick Bottino
-"""
+# In[ ]:
 
 
 import xgboost as xgb
@@ -20,17 +18,17 @@ import google.datalab.bigquery as bq
 
 class data_extraction:
     def BDD_Promo(data_source):
-        #Fonction qui va aller chercher les données d'entrainement pour entrainement du modèle.
+        #Fonction qui va aller chercher les donnÃ©es d'entrainement pour entrainement du modÃ¨le.
         #L'argument de cette fonction est source_data.
         #       source_data peut prendre 2 valeurs: 'csv' ou 'BigQuery'.
         #              "csv" pointe vers le fichier '../Test_OSA_GCP/data/BDD Promo.csv'
-        #              "BigQuery" va lancer le script qui va récuperer les données depuis la table BigQuery associée
+        #              "BigQuery" va lancer le script qui va rÃ©cuperer les donnÃ©es depuis la table BigQuery associÃ©e
         
         if data_source == 'csv':
-            #Charge la BDD Promo à partir du csv
+            #Charge la BDD Promo Ã  partir du csv
             df = pd.read_csv('../code for production/data/BDD_Promo.csv', sep=';')
         elif data_source == 'BigQuery':
-            raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore écrit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
+            raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore Ã©crit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
         else:
             raise ValueError('Veuillez utiliser csv ou BigQuery en argument de l objet data_extraction')
         
@@ -38,22 +36,19 @@ class data_extraction:
     
     
     def Forecast(data_source):
-        #Fonction qui va aller chercher les données pour prédictions.
+        #Fonction qui va aller chercher les donnÃ©es pour prÃ©dictions.
         #L'argument de cette fonction est source_data.
         #       source_data peut prendre 2 valeurs: 'csv' ou 'BigQuery'.
         #              "csv" pointe vers le fichier '../Test_OSA_GCP/data/Forecast.csv'
-        #              "BigQuery" va lancer le script qui va récuperer les données depuis la table BigQuery associée
+        #              "BigQuery" va lancer le script qui va rÃ©cuperer les donnÃ©es depuis la table BigQuery associÃ©e
         
         if data_source == 'csv':
-            #Charge la BDD Promo à partir du csv
+            #Charge la BDD Promo Ã  partir du csv
             df = pd.read_csv('../code for production/data/Forecast.csv', sep=';')
         elif data_source == 'BigQuery':
-            raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore écrit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
+            raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore Ã©crit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
         else:
             raise ValueError('Veuillez utiliser csv ou BigQuery en argument de l objet data_extraction')
         
         return df
-        
 
-        
-       
