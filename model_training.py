@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 """
 Created on 09/09/2019
 
@@ -46,7 +51,7 @@ def train_validate_model(df):
     
     
     #split train, validation and testing data
-    #cette partie pourra être remplacée par un CV de la librairie sklearn à posteriori
+    #cette partie pourra Ãªtre remplacÃ©e par un CV de la librairie sklearn Ã  posteriori
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size = 0.1, random_state=42)
     X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size = 0.15, random_state=38)
     
@@ -99,7 +104,7 @@ def train_deploy_model(df):
     
     
     #split train, validation and testing data
-    #cette partie pourra être remplacée par un CV de la librairie sklearn à posteriori
+    #cette partie pourra Ãªtre remplacÃ©e par un CV de la librairie sklearn Ã  posteriori
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size = 0.1, random_state=42)
     
     _,features = preprocessing.training_set_preprocessing.preco_features(df)
@@ -126,3 +131,4 @@ def train_deploy_model(df):
     
     #Save Trained Model
     dump(gbm, 'trained_XBG.joblib')
+

@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 """
 Created on 09/09/2019
 
@@ -16,3 +21,4 @@ def build_features(features, data):
     # Use some properties directly
     features.extend(data.columns)
     return data
+

@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 """
 Created on 09/09/2019
 
@@ -34,3 +39,4 @@ def BigQuery_exportation(df, dataset_id, table_name):
     load_job.result()  # Waits for table load to complete.
     
     print('BigQuery Exportation Finished. /nTotal exportation time = {:0.2f} min'.format((time()-start_time)/60))
+

@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 """
 Created on 09/09/2019
 
@@ -30,4 +35,4 @@ class training_set_preprocessing:
         target = pd.DataFrame(df['Ventes'])
         target_name = list(target)
         return target, target_name
-    
+

@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 """
 Created on 09/09/2019
 
@@ -14,11 +19,12 @@ import pandas as pd
 
 def perform_predictions(data,features,model):
     """Cette fonction prend en argument:
-        - F : DataFrame des lignes à prédire
+        - F : DataFrame des lignes Ã  prÃ©dire
         - features : le nom des colonnes du dataset d'entrainement
-        - model : le model sur lequel on doit faire les prédictions
+        - model : le model sur lequel on doit faire les prÃ©dictions
     """
     
     dforecast = xgb.DMatrix(data[features])
     forecast = model.predict(dforecast)
     return forecast
+

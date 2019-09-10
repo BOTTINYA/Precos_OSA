@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 """
 Created on 09/09/2019
 
@@ -18,20 +23,20 @@ import numpy as np
 
 
 
-# --------------- Ce que l'on souhaite faire avec le modèle ----------------------
-Training_of_model = True      #Veut-on ré-entrainer le modèle ?
-For_Deployement = False    #Si nous ré-entrainons le modèle, veut-on faire l'étape de validation ou souhaitons-nous le l'entrainer sur toutes les données pour le déployer ensuite ?
+# --------------- Ce que l'on souhaite faire avec le modÃ¨le ----------------------
+Training_of_model = True      #Veut-on rÃ©-entrainer le modÃ¨le ?
+For_Deployement = False    #Si nous rÃ©-entrainons le modÃ¨le, veut-on faire l'Ã©tape de validation ou souhaitons-nous le l'entrainer sur toutes les donnÃ©es pour le dÃ©ployer ensuite ?
 
-# -------------- Identification de la table dans laquelle on va exporter les données -----------------
+# -------------- Identification de la table dans laquelle on va exporter les donnÃ©es -----------------
 dataset_id = 'precos'
 table_name = 'last_preco'
 
 
 
-# ------------------ Entrainement du modèle -------------------------
+# ------------------ Entrainement du modÃ¨le -------------------------
 if Training_of_model is True:
-    """Dans un premier temps, on verifie si on souhaite ré-entrainer le modèle, 
-       et si oui, est-ce dans le but de le déployer ou de tester des paramètres en vue de validation.
+    """Dans un premier temps, on verifie si on souhaite rÃ©-entrainer le modÃ¨le, 
+       et si oui, est-ce dans le but de le dÃ©ployer ou de tester des paramÃ¨tres en vue de validation.
     """
     
       
@@ -43,12 +48,12 @@ if Training_of_model is True:
     
     
     if For_Deployement is False:      
-        """Souhaite-t-on faire l'étape de validation ?"""
+        """Souhaite-t-on faire l'Ã©tape de validation ?"""
         
         model, watchlist = model_training.train_validate_model(df)
     
     else:
-    """ On va entrainer le modèle en vue de déploiement, puis faire les prédictions sur celui-ci. """
+    """ On va entrainer le modÃ¨le en vue de dÃ©ploiement, puis faire les prÃ©dictions sur celui-ci. """
         model_training.train_deploy_model(df)
         
         #Load trained model
@@ -65,7 +70,7 @@ if Training_of_model is True:
         y_pred = predictions.perform_predictions(F,features,gbm)
         y_pred = np.round_(y_pred, decimals = 0)
         
-        df_pred = pd.DataFrame(data = y_pred, columns = ['Pre_commandes'])    #construction du DataFrame pour concatenation des données de préco
+        df_pred = pd.DataFrame(data = y_pred, columns = ['Pre_commandes'])    #construction du DataFrame pour concatenation des donnÃ©es de prÃ©co
     
         #Construction du DataFrame final des preco
         Precos = pd.concat([F[features],df_pred], axis = 1)
@@ -73,7 +78,7 @@ if Training_of_model is True:
         exportation.BigQuery_exportation(Precos, dataset_id, table_name)
         
         
-# --------------------- On souhaite utiliser le modèle sauvegardé -------------------
+# --------------------- On souhaite utiliser le modÃ¨le sauvegardÃ© -------------------
 else:
     #Load trained model
     gbm = joblib.load('trained_XBG.joblib')
@@ -89,9 +94,10 @@ else:
     y_pred = predictions.perform_predictions(F,features,gbm)
     y_pred = np.round_(y_pred, decimals = 0)
     
-    df_pred = pd.DataFrame(data = y_pred, columns = ['Pre_commandes'])    #construction du DataFrame pour concatenation des données de préco
+    df_pred = pd.DataFrame(data = y_pred, columns = ['Pre_commandes'])    #construction du DataFrame pour concatenation des donnÃ©es de prÃ©co
     
     #Construction du DataFrame final des preco
     Precos = pd.concat([F[features],df_pred], axis = 1)
     
     exportation.BigQuery_exportation(Precos, dataset_id, table_name)
+
