@@ -75,7 +75,7 @@ if Training_of_model is True:
         #Construction du DataFrame final des preco
         Precos = pd.concat([F[features],df_pred], axis = 1)
     
-#        exportation.BigQuery_exportation(Precos, dataset_id, table_name)
+        exportation.BigQuery_exportation(Precos, dataset_id, table_name)
         
         
 # --------------------- On souhaite utiliser le modèle sauvegardé -------------------
@@ -99,5 +99,5 @@ else:
     #Construction du DataFrame final des preco
     Precos = pd.concat([F[features],df_pred], axis = 1)
     
-#    exportation.BigQuery_exportation(Precos, dataset_id, table_name)
+    exportation.BigQuery_exportation(Precos, dataset_id, table_name)
 

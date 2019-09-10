@@ -26,7 +26,7 @@ class data_extraction:
         
         if data_source == 'csv':
             #Charge la BDD Promo à partir du csv
-            df = pd.read_csv('../data/BDD_Promo.csv', sep=';')
+            df = pd.read_csv('../code for production/data/BDD_Promo.csv', sep=';')
         elif data_source == 'BigQuery':
             raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore écrit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
         else:
@@ -44,7 +44,7 @@ class data_extraction:
         
         if data_source == 'csv':
             #Charge la BDD Promo à partir du csv
-            df = pd.read_csv('../data/Forecast.csv', sep=';')
+            df = pd.read_csv('../code for production/data/Forecast.csv', sep=';')
         elif data_source == 'BigQuery':
             raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore écrit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
         else:
