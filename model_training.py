@@ -39,7 +39,7 @@ params = {"objective": "reg:linear",
           "lambda" : 0.3
           }
 
-num_boost_round = 6000
+num_boost_round = 60
 early_stopping_rounds = 100
 
 # ------------------- Model Interpretation ----------------
