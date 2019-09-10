@@ -24,8 +24,10 @@ import numpy as np
 
 
 # --------------- Ce que l'on souhaite faire avec le modèle ----------------------
-Training_of_model = True      #Veut-on ré-entrainer le modèle ?
-For_Deployement = False    #Si nous ré-entrainons le modèle, veut-on faire l'étape de validation ou souhaitons-nous le l'entrainer sur toutes les données pour le déployer ensuite ?
+Training_of_model = input('Do you want to re-train the model ? (Y/n)')                                                          #Veut-on ré-entrainer le modèle ?
+For_Deployment = 'n'
+if Training_of_model == 'Y':
+    For_Deployment = input('Do you wish to re-train the model for deployment or testing ? (Y for deployment/ n for testing)')   #Si nous ré-entrainons le modèle, veut-on faire l'étape de validation ou souhaitons-nous le l'entrainer sur toutes les données pour le déployer ensuite ?
 
 # -------------- Identification de la table dans laquelle on va exporter les données -----------------
 dataset_id = 'precos'
@@ -34,7 +36,7 @@ table_name = 'last_preco'
 
 
 # ------------------ Entrainement du modèle -------------------------
-if Training_of_model is True:
+if Training_of_model == 'Y':
     """Dans un premier temps, on verifie si on souhaite ré-entrainer le modèle, 
        et si oui, est-ce dans le but de le déployer ou de tester des paramètres en vue de validation.
     """
@@ -47,13 +49,14 @@ if Training_of_model is True:
     
     
     
-    if For_Deployement is False:      
+    if For_Deployment is 'n':      
         """Souhaite-t-on faire l'étape de validation ?"""
         
         model, watchlist = model_training.train_validate_model(df)
     
     else:
-    """ On va entrainer le modèle en vue de déploiement, puis faire les prédictions sur celui-ci. """
+        """ On va entrainer le modèle en vue de déploiement, puis faire les prédictions sur celui-ci.
+        """
         model_training.train_deploy_model(df)
         
         #Load trained model

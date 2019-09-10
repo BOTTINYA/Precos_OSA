@@ -29,7 +29,7 @@ import metrics
 params = {"objective": "reg:linear",
           "booster" : "gbtree",
           "eta": 0.03,
-          "max_depth": 6,
+          "max_depth": 10,
           "subsample": 0.8,
           "colsample_bytree": 0.7,
           "silent": 1,
@@ -37,7 +37,7 @@ params = {"objective": "reg:linear",
           "lambda" : 0.3
           }
 
-num_boost_round = 10
+num_boost_round = 2500
 early_stopping_rounds = 100
 
 
