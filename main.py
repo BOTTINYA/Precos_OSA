@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[ ]: 
 
 
 """
@@ -29,9 +29,12 @@ For_Deployment = 'n'
 if Training_of_model == 'Y':
     For_Deployment = input('Do you wish to re-train the model for deployment or testing ? (Y for deployment/ n for testing)')   #Si nous ré-entrainons le modèle, veut-on faire l'étape de validation ou souhaitons-nous le l'entrainer sur toutes les données pour le déployer ensuite ?
 
+    
+    
+    
 # -------------- Identification de la table dans laquelle on va exporter les données -----------------
-dataset_id = 'precos'
-table_name = 'last_preco'
+bigquery_dataset_name = 'electric-armor-213817.test_preco'
+bigquery_table_name = 'Precos'
 
 
 
@@ -49,9 +52,8 @@ if Training_of_model == 'Y':
     
     
     
-    if For_Deployment is 'n':      
+    if For_Deployment == 'n':      
         """Souhaite-t-on faire l'étape de validation ?"""
-        
         model, watchlist = model_training.train_validate_model(df)
     
     else:
@@ -77,8 +79,9 @@ if Training_of_model == 'Y':
     
         #Construction du DataFrame final des preco
         Precos = pd.concat([F[features],df_pred], axis = 1)
+        Precos = Precos.dropna()
     
-#        exportation.BigQuery_exportation(Precos, dataset_id, table_name)
+        exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
         
         
 # --------------------- On souhaite utiliser le modèle sauvegardé -------------------
@@ -101,6 +104,6 @@ else:
     
     #Construction du DataFrame final des preco
     Precos = pd.concat([F[features],df_pred], axis = 1)
+    Precos = Precos.dropna()
     
-#    exportation.BigQuery_exportation(Precos, dataset_id, table_name)
-
+    exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)

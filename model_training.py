@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[ ]: 
 
 
 """
@@ -20,6 +20,8 @@ import preprocessing
 import data
 from time import time
 import metrics
+import shap
+import matplotlib.pyplot as plt
 
 
 
@@ -29,7 +31,7 @@ import metrics
 params = {"objective": "reg:linear",
           "booster" : "gbtree",
           "eta": 0.03,
-          "max_depth": 10,
+          "max_depth": 7,
           "subsample": 0.8,
           "colsample_bytree": 0.7,
           "silent": 1,
@@ -37,10 +39,33 @@ params = {"objective": "reg:linear",
           "lambda" : 0.3
           }
 
-num_boost_round = 2500
+num_boost_round = 6000
 early_stopping_rounds = 100
 
+# ------------------- Model Interpretation ----------------
 
+def SHAP_Analysis(model, X, y, feature_names):
+    """
+    Function that takes 3 arguments for plotting SHAP Analysis of the model:
+    - model : The model we want to explain
+    - X : The data features used for training
+    - y : The data target used for training
+    - features_names : the names of the training features
+    
+    This functions plots the summary plot    
+    """
+    
+
+    explainer = shap.TreeExplainer(model)
+    print('Calculating shap values for SHAP Analysis. \nThis may take few minutes due to the high amount of records...')
+    shap_values = explainer.shap_values(X = X, y = y)
+    
+    shap.summary_plot(shap_values , X , feature_names)
+    plt.show()
+    
+       
+    
+    
 
 #---------------- Training methods -----------------------
 
@@ -68,7 +93,7 @@ def train_validate_model(df):
     
     #Model training
     print("Training a XGBoost model")
-    gbm = xgb.train(params, dtrain, num_boost_round, evals=watchlist, early_stopping_rounds=early_stopping_rounds, verbose_eval=True)
+    gbm = xgb.train(params, dtrain, num_boost_round, evals=watchlist, early_stopping_rounds=early_stopping_rounds, verbose_eval=50)
     
 
     print("Performance on  training set")
@@ -88,7 +113,12 @@ def train_validate_model(df):
     error_test = metrics.rmspe(y_test.Ventes.values, test_probs)
     print('RMSPE: {:.6f}'.format(error_test))
     
-    xgb.plot_importance(model = gbm, max_num_features=50, height=0.8)
+    #------------------- Plot feature importances ----------------
+    xgb.plot_importance(booster = gbm, show_values = False, importance_type = 'gain')
+    plt.show()
+    
+    # ------------------- Perform SHAP Analysis on training data --------------------
+    SHAP_Analysis(gbm, X_train, y_train, feature_names)
 
     return gbm, watchlist
 
@@ -123,7 +153,7 @@ def train_deploy_model(df):
     print("Training a XGBoost model")
     
     start_time = time()
-    gbm = xgb.train(params, dtrain, num_boost_round, evals=watchlist, early_stopping_rounds=early_stopping_rounds, verbose_eval=True)
+    gbm = xgb.train(params, dtrain, num_boost_round, evals=watchlist, early_stopping_rounds=early_stopping_rounds, verbose_eval=50)
   
     fitting_time = time()-start_time
 

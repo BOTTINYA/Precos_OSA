@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[ ]: 
 
 
 """
@@ -15,28 +15,25 @@ import google.datalab.bigquery as bq
 from time import time
 
 
-def BigQuery_exportation(df, dataset_id, table_name):
+def BigQuery_exportation(df, bigquery_dataset_name, bigquery_table_name):
     
-    print('/nBigQuery exportation started ...')
-    
-    #BigQuery Table information
-    dataset_id = dataset_id
-
-    # Export to Big Query
-
-    client = bigquery.Client(location='EU')
-
-
-    dataset = client.dataset(dataset_id)
-
-    #Create the table and load the data
-
-    table_ref = dataset.table(table_name)
-    
+    print('\nBigQuery exportation started ...')
     start_time = time()
-    
-    load_job = client.load_table_from_dataframe(df, table_ref)
-    load_job.result()  # Waits for table load to complete.
-    
-    print('BigQuery Exportation Finished. /nTotal exportation time = {:0.2f} min'.format((time()-start_time)/60))
 
+    #Export vers BigQuery
+    bigquery_dataset_name = bigquery_dataset_name
+    bigquery_table_name = bigquery_table_name
+
+    # Define BigQuery dataset and table
+    dataset = bq.Dataset(bigquery_dataset_name)
+    table = bq.Table(bigquery_dataset_name + '.' + bigquery_table_name)
+
+
+    # Create or overwrite the existing table if it exists
+    table_schema = bq.Schema.from_data(df)
+    table.create(schema = table_schema, overwrite = True)
+
+    # Write the DataFrame to a BigQuery table
+    table.insert(df)
+    
+    print('BigQuery Exportation Finished. \nTotal exportation time = {:0.2f} min'.format((time()-start_time)/60))
