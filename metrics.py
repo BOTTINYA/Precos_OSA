@@ -13,7 +13,7 @@ Created on 09/09/2019
 import os
 import numpy as np
 import operator
-
+from sklearn.metrics import r2_score
 
 
 
@@ -32,3 +32,9 @@ def rmspe_xg(yhat, y):
     #yhat = yhat
     return "rmspe", rmspe(y,yhat)
 
+def adjusted_r2(feature_names, y_true, y_pred):
+    n = len(y_true)
+    p = len(feature_names)
+    r2 = r2_score(y_true,y_pred)
+    adj_r2 = 1 - (1-r2)*(n-1)/(n-p-1)
+    return adj_r2

@@ -12,14 +12,20 @@ Created on 09/09/2019
 
 
 import xgboost as xgb
+
 import pandas as pd
 import numpy as np
+
 from joblib import dump
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import r2_score
+
 import preprocessing
 import data
 from time import time
 import metrics
+import parameters
+
 import shap
 import matplotlib.pyplot as plt
 
@@ -28,19 +34,8 @@ import matplotlib.pyplot as plt
 
 
 #------------------ XGB parameters -----------------------
-params = {"objective": "reg:linear",
-          "booster" : "gbtree",
-          "eta": 0.03,
-          "max_depth": 7,
-          "subsample": 0.8,
-          "colsample_bytree": 0.7,
-          "silent": 1,
-          "seed": 300,
-          "lambda" : 0.3
-          }
+params = parameters.xgb_params
 
-num_boost_round = 60
-early_stopping_rounds = 100
 
 # ------------------- Model Interpretation ----------------
 
@@ -77,7 +72,7 @@ def train_validate_model(df):
     
     #split train, validation and testing data
     #cette partie pourra être remplacée par un CV de la librairie sklearn à posteriori
-    X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size = 0.1, random_state=42)
+    X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size = 0.33, random_state=42)
     X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size = 0.15, random_state=38)
     
     _,features = preprocessing.training_set_preprocessing.preco_features(df)
@@ -91,34 +86,73 @@ def train_validate_model(df):
     watchlist = [(dtrain, 'train'), (dvalid, 'eval')]
     
     
-    #Model training
-    print("Training a XGBoost model")
-    gbm = xgb.train(params, dtrain, num_boost_round, evals=watchlist, early_stopping_rounds=early_stopping_rounds, verbose_eval=50)
+    htuning = input('Do you want to perform hyperparameter tuning ? (Y/n)')
+    if htuning == 'Y':
+        #Model tuning
+        print("Performing Grid Search on the model")
+        gbm = xgb.XGBRegressor()
+
+        reg = GridSearchCV(gbm, param_grid = parameters.xgb_grid, cv = 3, verbose = 2, n_jobs = -1)
+        reg.fit(X_train,y_train)
+        
+        gbm = xgb.train(reg.best_params_, dtrain, num_boost_round = parameters.num_boost_round, evals=watchlist, early_stopping_rounds=parameters.early_stopping_rounds, verbose_eval=50) 
+        
+    else:
+        #Model training
+        print("Training a XGBoost model")
+        gbm = xgb.train(parameters.xgb_params, dtrain, num_boost_round = parameters.num_boost_round, evals=watchlist, early_stopping_rounds=parameters.early_stopping_rounds, verbose_eval=50)
     
 
-    print("Performance on  training set")
+    print("\nPerformance on  training set")
     dtest = xgb.DMatrix(X_train[features])
     test_probs = gbm.predict(dtrain)
     error_test = metrics.rmspe(y_train.Ventes.values, test_probs)
+    R_squarred = r2_score(y_train.Ventes.values, test_probs)
+    adj_2 = metrics.adjusted_r2(feature_names,y_train.Ventes.values, test_probs)
     print('RMSPE: {:.6f}'.format(error_test))
+    print('R Squarred: {:.6f}'.format(R_squarred))
+    print('R Squarred (adj): {:.6f}'.format(adj_2))
     
-    print("Performance on Validation set")
+    print("\nPerformance on Validation set")
     yhat = gbm.predict(xgb.DMatrix(X_valid[features]))
     error = metrics.rmspe(y_valid.Ventes.values, yhat)
-    print('RMSPE: {:.6f}'.format(error))
+    R_squarred = r2_score(y_valid.Ventes.values, yhat)
+    adj_2 = metrics.adjusted_r2(feature_names,y_valid.Ventes.values, yhat)
+    print('RMSPE: {:.6f}'.format(error_test))
+    print('R Squarred: {:.6f}'.format(R_squarred))
+    print('R Squarred (adj): {:.6f}'.format(adj_2))
+    
+    
 
-    print("Performance on test set")
+    print("\nPerformance on test set")
     dtest = xgb.DMatrix(X_test[features])
     test_probs = gbm.predict(dtest)
     error_test = metrics.rmspe(y_test.Ventes.values, test_probs)
+    R_squarred = r2_score(y_test.Ventes.values, test_probs)
+    adj_2 = metrics.adjusted_r2(feature_names,y_test.Ventes.values, test_probs)
     print('RMSPE: {:.6f}'.format(error_test))
+    print('R Squarred: {:.6f}'.format(R_squarred))
+    print('R Squarred (adj): {:.6f}'.format(adj_2))
     
+    
+    
+    
+    # Evaluation metrics
     #------------------- Plot feature importances ----------------
     xgb.plot_importance(booster = gbm, show_values = False, importance_type = 'gain')
     plt.show()
     
     # ------------------- Perform SHAP Analysis on training data --------------------
     SHAP_Analysis(gbm, X_train, y_train, feature_names)
+    
+    
+    
+    if (htuning == 'Y'):
+        ask_save_params = input('Do you want to save these hyperparameters ? (Y/n)')
+        if (ask_save_params == 'Y'):
+            functions.save_obj(reg.best_params_, 'xgb_params' )
+   
+        
 
     return gbm, watchlist
 
@@ -153,7 +187,7 @@ def train_deploy_model(df):
     print("Training a XGBoost model")
     
     start_time = time()
-    gbm = xgb.train(params, dtrain, num_boost_round, evals=watchlist, early_stopping_rounds=early_stopping_rounds, verbose_eval=50)
+    gbm = xgb.train(params, dtrain, num_boost_round = parameters.num_boost_round, evals=watchlist, early_stopping_rounds=parameters.early_stopping_rounds, verbose_eval=50)
   
     fitting_time = time()-start_time
 
