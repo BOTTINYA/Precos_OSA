@@ -145,7 +145,7 @@ def train_validate_model(df):
     
     # ------------------- Perform SHAP Analysis on training data --------------------
     X_shap, _, y_shap, _ = train_test_split(X_train, y_train, test_size = 0.66)  #reduction du nombre de lignes a analyser
-    #SHAP_Analysis(gbm, X_shap, y_shap, feature_names)
+    SHAP_Analysis(gbm, X_shap, y_shap, feature_names)
     
     
     
