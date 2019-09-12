@@ -16,7 +16,7 @@ import functions
 #------------------ XGB parameters -----------------------
 xgb_params = functions.load_obj('xgb_params')
 
-xgb_grid = {'max_depth':[5,7,9], 
+xgb_grid = {'max_depth':[7,9], 
             'learning_rate':[0.1, 0.3],
             'n_estimators':[100,250,500] ,
             'verbosity':[1], 
@@ -30,5 +30,5 @@ xgb_grid = {'max_depth':[5,7,9],
             'reg_lambda':[1],
             'importance_type':['gain']}
 
-num_boost_round = 3000
-early_stopping_rounds = 100
+num_boost_round = 500
+early_stopping_rounds = 30

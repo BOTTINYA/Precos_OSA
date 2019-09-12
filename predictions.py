@@ -23,8 +23,9 @@ def perform_predictions(data,features,model):
         - features : le nom des colonnes du dataset d'entrainement
         - model : le model sur lequel on doit faire les prédictions
     """
-    
+    print('\nPerforming predictions from the trained model')
     dforecast = xgb.DMatrix(data[features])
     forecast = model.predict(dforecast)
+    print('\nPredictions finished')
     return forecast
 

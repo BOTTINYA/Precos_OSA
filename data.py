@@ -25,10 +25,15 @@ class data_extraction:
         #              "BigQuery" va lancer le script qui va récuperer les données depuis la table BigQuery associée
         
         if data_source == 'csv':
+            
+            print('loading training data from csv file...')
             #Charge la BDD Promo à partir du csv
             df = pd.read_csv('../Precos_OSA/data/BDD_Promo.csv', sep=';')
+            
         elif data_source == 'BigQuery':
+            
             raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore écrit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
+            
         else:
             raise ValueError('Veuillez utiliser csv ou BigQuery en argument de l objet data_extraction')
         
@@ -43,6 +48,7 @@ class data_extraction:
         #              "BigQuery" va lancer le script qui va récuperer les données depuis la table BigQuery associée
         
         if data_source == 'csv':
+            print('loading data to predict from csv file...')
             #Charge la BDD Promo à partir du csv
             df = pd.read_csv('../Precos_OSA/data/Forecast.csv', sep=';')
         elif data_source == 'BigQuery':

@@ -25,6 +25,7 @@ import data
 from time import time
 import metrics
 import parameters
+import functions
 
 import shap
 import matplotlib.pyplot as plt
@@ -52,7 +53,7 @@ def SHAP_Analysis(model, X, y, feature_names):
     
 
     explainer = shap.TreeExplainer(model)
-    print('Calculating shap values for SHAP Analysis. \nThis may take few minutes due to the high amount of records...')
+    print('Calculating shap values for SHAP Analysis. \nThis may take a moment due to the high amount of records...')
     shap_values = explainer.shap_values(X = X, y = y)
     
     shap.summary_plot(shap_values , X , feature_names)
@@ -143,7 +144,8 @@ def train_validate_model(df):
     plt.show()
     
     # ------------------- Perform SHAP Analysis on training data --------------------
-    SHAP_Analysis(gbm, X_train, y_train, feature_names)
+    X_shap, _, y_shap, _ = train_test_split(X_train, y_train, test_size = 0.66)  #reduction du nombre de lignes a analyser
+    #SHAP_Analysis(gbm, X_shap, y_shap, feature_names)
     
     
     
@@ -151,6 +153,8 @@ def train_validate_model(df):
         ask_save_params = input('Do you want to save these hyperparameters ? (Y/n)')
         if (ask_save_params == 'Y'):
             functions.save_obj(reg.best_params_, 'xgb_params' )
+            print('Hyperparameters saved in local directory as "xgb_params.pkl". They are loaded in parameters.py for ulterior use')
+            print('To save a trained model with the found parameters, re-run main.py, retrain a model for deployment.')
    
         
 

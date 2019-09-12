@@ -36,6 +36,10 @@ if Training_of_model == 'Y':
 bigquery_dataset_name = 'electric-armor-213817.test_preco'
 bigquery_table_name = 'Precos'
 
+# -------------- Identification du bucket dans lequel on va exporter les données -----------------
+bucket_name = 'test_precos'
+file_destination_name = 'precos.csv'
+
 
 
 # ------------------ Entrainement du modèle -------------------------
@@ -82,6 +86,7 @@ if Training_of_model == 'Y':
         Precos = Precos.dropna()
     
         exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
+        exportation.export_forecast_to_GCS(Precos, bucket_name, file_destination_name)
         
         
 # --------------------- On souhaite utiliser le modèle sauvegardé -------------------
@@ -107,3 +112,4 @@ else:
     Precos = Precos.dropna()
     
     exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
+    exportation.export_forecast_to_GCS(Precos, bucket_name, file_destination_name)
