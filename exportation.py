@@ -61,6 +61,7 @@ def export_forecast_to_GCS(df, bucket_name, file_destination_name):
     start_time = time()
     
     blob.upload_from_filename(file_destination_name)
+     
     
     print('GCS Exportation Finished. \nTotal exportation time = {:0.2f} min'.format((time()-start_time)/60))
 

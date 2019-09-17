@@ -33,12 +33,12 @@ if Training_of_model == 'Y':
     
     
 # -------------- Identification de la table dans laquelle on va exporter les données -----------------
-bigquery_dataset_name = 'electric-armor-213817.test_preco'
-bigquery_table_name = 'Precos'
+bigquery_dataset_name = 'osa-2019.precos'
+bigquery_table_name = 'last_precos_raw'
 
 # -------------- Identification du bucket dans lequel on va exporter les données -----------------
-bucket_name = 'test_precos'
-file_destination_name = 'precos.csv'
+bucket_name = '<bucket_name>'
+file_destination_name = 'last_precos_raw.csv'
 
 
 
@@ -79,11 +79,11 @@ if Training_of_model == 'Y':
         y_pred = predictions.perform_predictions(F,features,gbm)
         y_pred = np.round_(y_pred, decimals = 0)
         
-        df_pred = pd.DataFrame(data = y_pred, columns = ['Pre_commandes'])    #construction du DataFrame pour concatenation des données de préco
+        df_pred = pd.DataFrame(data = y_pred, columns = ['Preconisations_Ventes'])    #construction du DataFrame pour concatenation des données de préco
     
         #Construction du DataFrame final des preco
         Precos = pd.concat([F[features],df_pred], axis = 1)
-        Precos = Precos.dropna()
+        Precos = Precos.where(pd.notnull(Precos), None)
     
         exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
         exportation.export_forecast_to_GCS(Precos, bucket_name, file_destination_name)
@@ -105,11 +105,11 @@ else:
     y_pred = predictions.perform_predictions(F,features,gbm)
     y_pred = np.round_(y_pred, decimals = 0)
     
-    df_pred = pd.DataFrame(data = y_pred, columns = ['Pre_commandes'])    #construction du DataFrame pour concatenation des données de préco
+    df_pred = pd.DataFrame(data = y_pred, columns = ['Preconisations_Ventes'])    #construction du DataFrame pour concatenation des données de préco
     
     #Construction du DataFrame final des preco
     Precos = pd.concat([F[features],df_pred], axis = 1)
-    Precos = Precos.dropna()
+    Precos = Precos.where(pd.notnull(Precos), None)
     
     exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
     exportation.export_forecast_to_GCS(Precos, bucket_name, file_destination_name)
