@@ -15,6 +15,8 @@ from google.cloud import bigquery
 import google.datalab.bigquery as bq
 
 
+client = bigquery.Client()
+
 
 class data_extraction:
     def BDD_Promo(data_source):
@@ -31,8 +33,18 @@ class data_extraction:
             df = pd.read_csv('../Precos_OSA/data/BDD_Promo.csv', sep=';')
             
         elif data_source == 'BigQuery':
-            
-            raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore écrit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
+            print('Querying BigQuery for training data...')
+
+            sql = """
+            SELECT * FROM `osa-2019.precos.export_histo`
+            """
+
+            start_time = time()
+
+            df = client.query(sql).to_dataframe()         #Interrogation de BigQuery 
+
+            print('Querying and loading time = {:0.2f} s '.format(time() - start_time))
+            print('Request finished\n')
             
         else:
             raise ValueError('Veuillez utiliser csv ou BigQuery en argument de l objet data_extraction')
