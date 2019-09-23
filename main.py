@@ -15,13 +15,14 @@ import model_training
 import preprocessing
 import predictions
 import exportation
+import settings
 
 import joblib
 
 import pandas as pd
 import numpy as np
 
-
+enseigne = settings.enseigne
 
 # --------------- Ce que l'on souhaite faire avec le modèle ----------------------
 Training_of_model = input('Do you want to re-train the model ? (Y/n)')                                                          #Veut-on ré-entrainer le modèle ?
@@ -50,7 +51,7 @@ if Training_of_model == 'Y':
     
       
     #Data extraction for training model
-    df = data.data_extraction.BDD_Promo('csv')
+    df = data.data_extraction.BDD_Promo('BigQuery', enseigne)
     #Data Cleaning
     df = preprocessing.training_set_preprocessing.training_set_cleaning(df)
     
@@ -65,29 +66,6 @@ if Training_of_model == 'Y':
         """
         model_training.train_deploy_model(df)
         
-        #Load trained model
-        gbm = joblib.load('trained_XBG.joblib')
-    
-        #Get data to perform prediction on
-        F = data.data_extraction.Forecast('csv')
-    
-        #Get training features
-        df_train = data.data_extraction.BDD_Promo('csv')
-        _,features = preprocessing.training_set_preprocessing.preco_features(df_train)
-    
-        #Perform predictions
-        y_pred = predictions.perform_predictions(F,features,gbm)
-        y_pred = np.round_(y_pred, decimals = 0)
-        
-        df_pred = pd.DataFrame(data = y_pred, columns = ['Preconisations_Ventes'])    #construction du DataFrame pour concatenation des données de préco
-    
-        #Construction du DataFrame final des preco
-        Precos = pd.concat([F[features],df_pred], axis = 1)
-        Precos = Precos.where(pd.notnull(Precos), None)
-    
-        exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
-        exportation.export_forecast_to_GCS(Precos, bucket_name, file_destination_name)
-        
         
 # --------------------- On souhaite utiliser le modèle sauvegardé -------------------
 else:
@@ -98,7 +76,7 @@ else:
     F = data.data_extraction.Forecast('csv')
     
     #Get training features
-    df_train = data.data_extraction.BDD_Promo('csv')
+    df_train = data.data_extraction.BDD_Promo('BigQuery', enseigne)
     _,features = preprocessing.training_set_preprocessing.preco_features(df_train)
     
     #Perform predictions

@@ -23,16 +23,19 @@ from sklearn.model_selection import train_test_split
 class training_set_preprocessing:
     #Use only Sales bigger then zero. Simplifies calculation of rmspe
     def training_set_cleaning(df):
-        data = df[df['Ventes'] > 0]
+        data = df[df['ventes'] > 0]
         return data
     
     def preco_features(df):
-        features = df.drop(['Ventes'], axis=1)
+        features = df.drop(['ventes'], axis=1)
         feature_names = list(features)
         return features, feature_names
     
     def preco_target(df):
-        target = pd.DataFrame(df['Ventes'])
+        target = pd.DataFrame(df['ventes'])
         target_name = list(target)
         return target, target_name
 
+    
+#    def feature_encoding(df):
+    

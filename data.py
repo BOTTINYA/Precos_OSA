@@ -8,6 +8,9 @@ import xgboost as xgb
 import pandas as pd
 import numpy as np
 import operator
+import settings
+
+from time import time
 
 import matplotlib.pyplot as plt
 
@@ -18,8 +21,9 @@ import google.datalab.bigquery as bq
 client = bigquery.Client()
 
 
+
 class data_extraction:
-    def BDD_Promo(data_source):
+    def BDD_Promo(data_source,enseigne):
         #Fonction qui va aller chercher les données d'entrainement pour entrainement du modèle.
         #L'argument de cette fonction est source_data.
         #       source_data peut prendre 2 valeurs: 'csv' ou 'BigQuery'.
@@ -36,12 +40,13 @@ class data_extraction:
             print('Querying BigQuery for training data...')
 
             sql = """
-            SELECT * FROM `osa-2019.precos.export_histo`
-            """
+            SELECT * FROM `osa-2019.donnees_promos.histo_promo_partition_date_enseigne` WHERE enseigne = '"""+enseigne+"""'"""
 
             start_time = time()
 
             df = client.query(sql).to_dataframe()         #Interrogation de BigQuery 
+            
+            df.to_csv('../Precos_OSA/data/BDD_Promos_V2.csv')
 
             print('Querying and loading time = {:0.2f} s '.format(time() - start_time))
             print('Request finished\n')
@@ -52,7 +57,7 @@ class data_extraction:
         return df
     
     
-    def Forecast(data_source):
+    def Forecast(data_source, enseigne):
         #Fonction qui va aller chercher les données pour prédictions.
         #L'argument de cette fonction est source_data.
         #       source_data peut prendre 2 valeurs: 'csv' ou 'BigQuery'.

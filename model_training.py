@@ -65,7 +65,7 @@ def SHAP_Analysis(model, X, y, feature_names):
 
 #---------------- Training methods -----------------------
 
-def train_validate_model(df):
+def train_validate_model(df,enseigne):
     #Get data
     X, feature_names = preprocessing.training_set_preprocessing.preco_features(df)
     y, _ = preprocessing.training_set_preprocessing.preco_target(df)
@@ -152,8 +152,8 @@ def train_validate_model(df):
     if (htuning == 'Y'):
         ask_save_params = input('Do you want to save these hyperparameters ? (Y/n)')
         if (ask_save_params == 'Y'):
-            functions.save_obj(reg.best_params_, 'xgb_params' )
-            print('Hyperparameters saved in local directory as "xgb_params.pkl". They are loaded in parameters.py for ulterior use')
+            functions.save_obj(reg.best_params_, 'xgb_params_'+enseigne )
+            print('Hyperparameters saved in local directory as "xgb_params_<enseigne>.pkl". They are loaded in parameters.py for ulterior use')
             print('To save a trained model with the found parameters, re-run main.py, retrain a model for deployment.')
    
         
@@ -164,7 +164,7 @@ def train_validate_model(df):
 
 
     
-def train_deploy_model(df):
+def train_deploy_model(df,enseigne):
     
     #Get data
     X, _ = preprocessing.training_set_preprocessing.preco_features(df)
@@ -198,5 +198,5 @@ def train_deploy_model(df):
     print('Total fitting time = {:0.2f}s.'.format(fitting_time))
     
     #Save Trained Model
-    dump(gbm, 'trained_XBG.joblib')
+    dump(gbm, 'trained_XBG_'+enseigne+'.joblib')
 

@@ -11,10 +11,15 @@ Created on 09/09/2019
 """
 
 import functions
+import settings
+
+settings.init()
+
+enseigne = settings.enseigne
 
 
 #------------------ XGB parameters -----------------------
-xgb_params = functions.load_obj('xgb_params')
+xgb_params = functions.load_obj('xgb_params_'+enseigne)
 
 xgb_grid = {'max_depth':[7,9], 
             'learning_rate':[0.1, 0.3],
