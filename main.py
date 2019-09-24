@@ -93,7 +93,16 @@ else:
     F = data.data_extraction.Forecast('csv')
     
     #Get training features
-    df_train = data.data_extraction.BDD_Promo('BigQuery', enseigne)
+    #Data extraction for used to train model
+    df = data.data_extraction.BDD_Promo('BigQuery', enseigne)
+    #Data Cleaning
+    df_clean = preprocessing.training_set_preprocessing.training_set_cleaning(df)
+    
+    #Data Encoding
+    df_encoded = preprocessing.training_set_preprocessing.feature_encoding(df_clean)
+    
+    
+    
     
     _,features = preprocessing.training_set_preprocessing.preco_features(df_train)
     

@@ -40,7 +40,12 @@ class data_extraction:
             print('\nQuerying BigQuery for training data...')
 
             sql = """
-            SELECT * FROM `osa-2019.donnees_promos.histo_promo_partition_date_enseigne` WHERE enseigne = '"""+enseigne+"""'"""
+            SELECT DISTINCT
+                * 
+            FROM 
+                `osa-2019.donnees_promos.histo_promo_partition_date_enseigne` 
+            WHERE enseigne = '"""+enseigne+"""'"""
+            
 
             start_time = time()
 
@@ -52,7 +57,7 @@ class data_extraction:
             print('Request finished\n')
             
         else:
-            raise ValueError('Veuillez utiliser csv ou BigQuery en argument de l objet data_extraction')
+            raise ValueError('Veuillez utiliser csv ou BigQuery en argument de l objet BDD_Promo')
         
         return df
     

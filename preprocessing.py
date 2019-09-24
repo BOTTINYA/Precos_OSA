@@ -21,10 +21,24 @@ from sklearn.model_selection import train_test_split
 #Nous n'allons considerer que les codes pour lesquels nous avons des ventes
 
 class training_set_preprocessing:
-    #Use only Sales bigger then zero. Simplifies calculation of rmspe
+    #Use only Sales bigger than zero. Simplifies calculation of rmspe
+    
+    
     def training_set_cleaning(df):
+        
         data = df[df['ventes'] > 0]
-        data = data.drop(['annee'], axis = 1)
+        columns = list(data)
+        
+        columns_to_drop = ['annee']
+        for col in columns_to_drop:
+            data = data.drop([col], axis = 1)
+        
+        for col in columns:
+            if data[col].isnull().all() == True:
+                data = data.drop([col], axis = 1)
+            else:
+                pass
+            
         return data
     
     def preco_features(df):
@@ -48,8 +62,9 @@ class training_set_preprocessing:
         La fonction renvoie le dataframe encodé.
         """
         categorical_columns = list(df.select_dtypes(include=['category','object']))
-        
-        specific_columns = []
+                   
+            
+        specific_columns = []        
         
         data = df.copy()
         for col in categorical_columns:
@@ -60,3 +75,8 @@ class training_set_preprocessing:
             else:
                 data = pd.concat([data,pd.get_dummies(data[col],prefix=col)],axis=1).drop([col],axis=1)
         return data
+
+    
+    
+class prediction_data_preprocessing:
+    pass

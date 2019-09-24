@@ -19,8 +19,8 @@ enseigne = settings.enseigne
 
 
 #------------------ XGB parameters -----------------------
-#xgb_params = functions.load_obj('xgb_params_'+enseigne)
-xgb_params = functions.load_obj('xgb_params')
+xgb_params = functions.load_obj('xgb_params_'+enseigne)
+#xgb_params = functions.load_obj('xgb_params')
 
 
 xgb_grid = {'max_depth':[7,9], 
@@ -38,4 +38,4 @@ xgb_grid = {'max_depth':[7,9],
             'importance_type':['gain']}
 
 num_boost_round = 1000
-early_stopping_rounds = 30
+early_stopping_rounds = 100
