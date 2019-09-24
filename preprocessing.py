@@ -24,6 +24,7 @@ class training_set_preprocessing:
     #Use only Sales bigger then zero. Simplifies calculation of rmspe
     def training_set_cleaning(df):
         data = df[df['ventes'] > 0]
+        data = data.drop(['annee'], axis = 1)
         return data
     
     def preco_features(df):
@@ -37,5 +38,25 @@ class training_set_preprocessing:
         return target, target_name
 
     
-#    def feature_encoding(df):
-    
+    def feature_encoding(df):
+        """
+        Cette fonction réalise l'encodage des colonnes catégoriques ou non selon differentes stratégies:
+        - Pour les colonnes catégoriques très spécifiques et à grand nombre de niveaux (code SAP, nom magasin, ...), la fonction va soit faire un label encoding, soit supprimer la colonne afin d'utiliser d'autres colonnes
+        - Pour les colonnes catégoriques à nombre de niveau plus faible (<15), la fonction va réaliser un One Hot Encoding
+        - Pour certaines colonnes du choix de l'utilisateur, une stratégie plus spécifique peut être définie
+        
+        La fonction renvoie le dataframe encodé.
+        """
+        categorical_columns = list(df.select_dtypes(include=['category','object']))
+        
+        specific_columns = []
+        
+        data = df.copy()
+        for col in categorical_columns:
+            if col in specific_columns:
+                pass
+            elif len(data[col].unique()) > 15:
+                data = data.drop([col], axis=1)
+            else:
+                data = pd.concat([data,pd.get_dummies(data[col],prefix=col)],axis=1).drop([col],axis=1)
+        return data

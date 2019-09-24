@@ -32,12 +32,12 @@ class data_extraction:
         
         if data_source == 'csv':
             
-            print('loading training data from csv file...')
+            print('\nloading training data from csv file...')
             #Charge la BDD Promo à partir du csv
             df = pd.read_csv('../Precos_OSA/data/BDD_Promo.csv', sep=';')
             
         elif data_source == 'BigQuery':
-            print('Querying BigQuery for training data...')
+            print('\nQuerying BigQuery for training data...')
 
             sql = """
             SELECT * FROM `osa-2019.donnees_promos.histo_promo_partition_date_enseigne` WHERE enseigne = '"""+enseigne+"""'"""
