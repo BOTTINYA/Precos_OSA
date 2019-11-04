@@ -40,7 +40,8 @@ class training_set_preprocessing:
                            'CodeMagasin', 
                            'CodeSAPProduit',
                            'EANProduit', 
-                           'NomProduit']
+                           'NomProduit',
+                           'Mecanique']
         
         
         for col in columns_to_drop:

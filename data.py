@@ -44,7 +44,7 @@ class data_extraction:
                 * 
             FROM 
                 `osa-2019.Performance_Promos.HistoriquePromoPourTrainingAlgo` 
-            WHERE Enseigne LIKE UPPER('"""+enseigne+"""')"""
+            WHERE Enseigne LIKE UPPER('"""+enseigne+"""')""" 
             
 
             start_time = time()
