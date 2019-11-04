@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[ ]: 
 
 
 import xgboost as xgb
 import pandas as pd
 import numpy as np
 import operator
+import settings
+
+from time import time
 
 import matplotlib.pyplot as plt
 
@@ -15,9 +18,12 @@ from google.cloud import bigquery
 import google.datalab.bigquery as bq
 
 
+client = bigquery.Client()
+
+
 
 class data_extraction:
-    def BDD_Promo(data_source):
+    def BDD_Promo(data_source,enseigne):
         #Fonction qui va aller chercher les données d'entrainement pour entrainement du modèle.
         #L'argument de cette fonction est source_data.
         #       source_data peut prendre 2 valeurs: 'csv' ou 'BigQuery'.
@@ -25,17 +31,38 @@ class data_extraction:
         #              "BigQuery" va lancer le script qui va récuperer les données depuis la table BigQuery associée
         
         if data_source == 'csv':
+            
+            print('\nloading training data from csv file...')
             #Charge la BDD Promo à partir du csv
-            df = pd.read_csv('../code for production/data/BDD_Promo.csv', sep=';')
+            df = pd.read_csv('../Precos_OSA/data/BDD_Promo.csv', sep=';')
+            
         elif data_source == 'BigQuery':
-            raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore écrit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
+            print('\nQuerying BigQuery for training data...')
+
+            sql = """
+            SELECT DISTINCT
+                * 
+            FROM 
+                `osa-2019.Performance_Promos.HistoriquePromos` 
+            WHERE VentesUC > 0 AND Enseigne = UPPER('"""+enseigne+"""')"""
+            
+
+            start_time = time()
+
+            df = client.query(sql).to_dataframe()         #Interrogation de BigQuery 
+            
+            df.to_csv('../Precos_OSA/data/BDD_Promos_V2.csv')
+
+            print('Querying and loading time = {:0.2f} s '.format(time() - start_time))
+            print('Request finished\n')
+            
         else:
-            raise ValueError('Veuillez utiliser csv ou BigQuery en argument de l objet data_extraction')
+            raise ValueError('Veuillez utiliser csv ou BigQuery en argument de l objet BDD_Promo')
         
         return df
     
     
-    def Forecast(data_source):
+    def Forecast(data_source, enseigne):
         #Fonction qui va aller chercher les données pour prédictions.
         #L'argument de cette fonction est source_data.
         #       source_data peut prendre 2 valeurs: 'csv' ou 'BigQuery'.
@@ -43,8 +70,9 @@ class data_extraction:
         #              "BigQuery" va lancer le script qui va récuperer les données depuis la table BigQuery associée
         
         if data_source == 'csv':
+            print('loading data to predict from csv file...')
             #Charge la BDD Promo à partir du csv
-            df = pd.read_csv('../code for production/data/Forecast.csv', sep=';')
+            df = pd.read_csv('../Precos_OSA/data/Forecast.csv', sep=';')
         elif data_source == 'BigQuery':
             raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore écrit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
         else:

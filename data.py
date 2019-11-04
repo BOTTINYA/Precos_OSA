@@ -34,7 +34,7 @@ class data_extraction:
             
             print('\nloading training data from csv file...')
             #Charge la BDD Promo à partir du csv
-            df = pd.read_csv('../Precos_OSA/data/BDD_Promo.csv', sep=';')
+            df = pd.read_csv('../Precos_OSA/data/BDD_Promo_V2.csv', sep=',')
             
         elif data_source == 'BigQuery':
             print('\nQuerying BigQuery for training data...')
@@ -43,8 +43,8 @@ class data_extraction:
             SELECT DISTINCT
                 * 
             FROM 
-                `osa-2019.donnees_promos.histo_promo_partition_date_enseigne` 
-            WHERE enseigne = '"""+enseigne+"""'"""
+                `osa-2019.Performance_Promos.HistoriquePromoPourTrainingAlgo` 
+            WHERE Enseigne LIKE UPPER('"""+enseigne+"""')"""
             
 
             start_time = time()

@@ -38,12 +38,12 @@ if Training_of_model == 'Y':
 
     
 # -------------- Identification de la table dans laquelle on va exporter les données -----------------
-bigquery_dataset_name = 'osa-2019.precos'
-bigquery_table_name = 'last_precos_raw_'+enseigne
+#bigquery_dataset_name = 'osa-2019.Performance_Promos'
+#bigquery_table_name = 'last_precos_raw_'+enseigne+'_test'
 
 # -------------- Identification du bucket dans lequel on va exporter les données -----------------
-bucket_name = '<bucket_name>'
-file_destination_name = 'last_precos_raw_'+enseigne+'.csv'
+#bucket_name = 'osa_data_bucket'
+#file_destination_name = 'last_precos_raw_'+enseigne+'.csv'
 
 
 
@@ -100,9 +100,7 @@ else:
     
     #Data Encoding
     df_encoded = preprocessing.training_set_preprocessing.feature_encoding(df_clean)
-    
-    
-    
+
     
     _,features = preprocessing.training_set_preprocessing.preco_features(df_train)
     
@@ -116,5 +114,5 @@ else:
     Precos = pd.concat([F[features],df_pred], axis = 1)
     Precos = Precos.dropna()
     
-    exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
-    exportation.export_forecast_to_GCS(Precos, bucket_name, file_destination_name)
+    #exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
+    #exportation.export_forecast_to_GCS(Precos, bucket_name, file_destination_name)

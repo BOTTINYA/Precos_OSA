@@ -26,28 +26,41 @@ class training_set_preprocessing:
     
     def training_set_cleaning(df):
         
-        data = df[df['ventes'] > 0]
-        columns = list(data)
+        columns = df.columns
         
-        columns_to_drop = ['annee']
+        columns_to_drop = ['Annee', 
+                           'NomOpe', 
+                           'DateDebutConso', 
+                           'DateFinConso', 
+                           'Enseigne',
+                           'DirectionRegionale', 
+                           'ZoneCVR', 
+                           'SecteurCM', 
+                           'NomMagasin',
+                           'CodeMagasin', 
+                           'CodeSAPProduit',
+                           'EANProduit', 
+                           'NomProduit']
+        
+        
         for col in columns_to_drop:
-            data = data.drop([col], axis = 1)
+            df = df.drop([col], axis = 1)
         
-        for col in columns:
-            if data[col].isnull().all() == True:
-                data = data.drop([col], axis = 1)
+        for col in (set(columns) - set(columns_to_drop)):                        #On vire les colonnes ou toutes les valeurs de la colonne sont nulles
+            if df[col].isnull().all() == True:
+                df = df.drop([col], axis = 1)
             else:
                 pass
             
-        return data
+        return df
     
     def preco_features(df):
-        features = df.drop(['ventes'], axis=1)
+        features = df.drop(['VentesUC'], axis=1)
         feature_names = list(features)
         return features, feature_names
     
     def preco_target(df):
-        target = pd.DataFrame(df['ventes'])
+        target = pd.DataFrame(df['VentesUC'])
         target_name = list(target)
         return target, target_name
 
@@ -75,8 +88,3 @@ class training_set_preprocessing:
             else:
                 data = pd.concat([data,pd.get_dummies(data[col],prefix=col)],axis=1).drop([col],axis=1)
         return data
-
-    
-    
-class prediction_data_preprocessing:
-    pass
