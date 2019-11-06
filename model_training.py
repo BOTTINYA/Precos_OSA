@@ -87,7 +87,7 @@ def train_validate_model(df,enseigne):
     watchlist = [(dtrain, 'train'), (dvalid, 'eval')]
     
     
-    htuning = input('Do you want to perform hyperparameter tuning ? (Y/n)')
+    htuning = input('Voulez-vous faire un tuning automatique des Hyperparamètres du modèle ? (Y/n)')
     if htuning == 'Y':
         #Model tuning
         print("Performing Grid Search on the model")
@@ -107,18 +107,18 @@ def train_validate_model(df,enseigne):
     print("\nPerformance on  training set")
     dtest = xgb.DMatrix(X_train[features])
     test_probs = gbm.predict(dtrain)
-    error_test = metrics.rmspe(y_train.ventes.values, test_probs)
-    R_squarred = r2_score(y_train.ventes.values, test_probs)
-    adj_2 = metrics.adjusted_r2(feature_names,y_train.ventes.values, test_probs)
+    error_test = metrics.rmspe(y_train.VentesUC_log_transformed.values, test_probs)
+    R_squarred = r2_score(y_train.VentesUC_log_transformed.values, test_probs)
+    adj_2 = metrics.adjusted_r2(feature_names,y_train.VentesUC_log_transformed.values, test_probs)
     print('RMSPE: {:.6f}'.format(error_test))
     print('R Squarred: {:.6f}'.format(R_squarred))
     print('R Squarred (adj): {:.6f}'.format(adj_2))
     
     print("\nPerformance on Validation set")
     yhat = gbm.predict(xgb.DMatrix(X_valid[features]))
-    error = metrics.rmspe(y_valid.ventes.values, yhat)
-    R_squarred = r2_score(y_valid.ventes.values, yhat)
-    adj_2 = metrics.adjusted_r2(feature_names,y_valid.ventes.values, yhat)
+    error = metrics.rmspe(y_valid.VentesUC_log_transformed.values, yhat)
+    R_squarred = r2_score(y_valid.VentesUC_log_transformed.values, yhat)
+    adj_2 = metrics.adjusted_r2(feature_names,y_valid.VentesUC_log_transformed.values, yhat)
     print('RMSPE: {:.6f}'.format(error_test))
     print('R Squarred: {:.6f}'.format(R_squarred))
     print('R Squarred (adj): {:.6f}'.format(adj_2))
@@ -128,9 +128,9 @@ def train_validate_model(df,enseigne):
     print("\nPerformance on test set")
     dtest = xgb.DMatrix(X_test[features])
     test_probs = gbm.predict(dtest)
-    error_test = metrics.rmspe(y_test.ventes.values, test_probs)
-    R_squarred = r2_score(y_test.ventes.values, test_probs)
-    adj_2 = metrics.adjusted_r2(feature_names,y_test.ventes.values, test_probs)
+    error_test = metrics.rmspe(y_test.VentesUC_log_transformed.values, test_probs)
+    R_squarred = r2_score(y_test.VentesUC_log_transformed.values, test_probs)
+    adj_2 = metrics.adjusted_r2(feature_names,y_test.VentesUC_log_transformed.values, test_probs)
     print('RMSPE: {:.6f}'.format(error_test))
     print('R Squarred: {:.6f}'.format(R_squarred))
     print('R Squarred (adj): {:.6f}'.format(adj_2))
@@ -144,7 +144,7 @@ def train_validate_model(df,enseigne):
     plt.show()
     
     # ------------------- Perform SHAP Analysis on training data --------------------
-    X_shap, _, y_shap, _ = train_test_split(X_train, y_train, test_size = 0.66)  #reduction du nombre de lignes a analyser
+    X_shap, _, y_shap, _ = train_test_split(X_train, y_train, test_size = 0.7)  #reduction du nombre de lignes a analyser
     SHAP_Analysis(gbm, X_shap, y_shap, feature_names)
     
     

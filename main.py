@@ -19,6 +19,8 @@ import settings
 
 import joblib
 
+import matplotlib.pyplot as plt
+import seaborn as sns
 import pandas as pd
 import numpy as np
 
@@ -31,10 +33,10 @@ import numpy as np
 enseigne = settings.enseigne
 
 # --------------- Ce que l'on souhaite faire avec le modèle ----------------------
-Training_of_model = input('Do you want to re-train the model ? (Y/n)')                                                          #Veut-on ré-entrainer le modèle ?
+Training_of_model = input('Souhaitez-vous ré-entrainer le modèle ? (Y/n)')                                                          #Veut-on ré-entrainer le modèle ?
 For_Deployment = 'n'
 if Training_of_model == 'Y':
-    For_Deployment = input('Do you wish to re-train the model for deployment or testing ? (Y for deployment/ n for testing)')   #Si nous ré-entrainons le modèle, veut-on faire l'étape de validation ou souhaitons-nous le l'entrainer sur toutes les données pour le déployer ensuite ?
+    For_Deployment = input('Souhaitez-vous ré-entrainer le modèle pour déploiement ou phase de test ? (Y pour deploiement/ n pour phase de test)')   #Si nous ré-entrainons le modèle, veut-on faire l'étape de validation ou souhaitons-nous le l'entrainer sur toutes les données pour le déployer ensuite ?
 
     
 # -------------- Identification de la table dans laquelle on va exporter les données -----------------
@@ -62,19 +64,53 @@ if Training_of_model == 'Y':
     
       
     #Data extraction for training model
-    df = data.data_extraction.BDD_Promo('BigQuery', enseigne)
+    df = data.data_extraction.BDD_Promo('csv', enseigne)
     #Data Cleaning
     df_clean = preprocessing.training_set_preprocessing.training_set_cleaning(df)
     
+    #Data Transforamtion pour normalisation des colonnes Skewed
+    df_transform = preprocessing.training_set_preprocessing.data_forward_transform(df_clean)
+    
     #Data Encoding
     print('\nPerforming training data encoding')
-    df_encoded = preprocessing.training_set_preprocessing.feature_encoding(df_clean)
+    df_encoded = preprocessing.training_set_preprocessing.feature_encoding(df_transform)
     print('Data encoding finished\n')
     
     
     
     if For_Deployment == 'n':      
         """Souhaite-t-on faire l'étape de validation ?"""
+        
+       #Afficher la distribution des données
+        print('Affichage de la distribution des données\n')
+        fig = plt.figure
+        fig(figsize =(20,30))
+        i=0
+        for col in df_encoded.columns:
+            plt.subplot(7, 4, i + 1)
+            plt.title(col)
+            sns.distplot(df_encoded[[col]],  kde_kws={'bw':0.3})
+            i+=1
+
+        plt.tight_layout
+        plt.show()
+        print('\n')
+        
+    
+        #Afficher la matrice de correlation des colonnes
+        print('Affichage de la corrélation des colonnes\n')
+        X_corr = df_encoded.corr()
+        mask = np.zeros_like(X_corr, dtype=np.bool)
+        mask[np.triu_indices_from(mask)] = True
+
+        fig = plt.figure(figsize = (12,12))
+
+        sns.heatmap(X_corr, center=0, square = True, mask = mask)
+        plt.show()
+        
+        print('\n')
+    
+        # Entrainer le modèle pour validation et interpretation
         model, watchlist = model_training.train_validate_model(df_encoded, enseigne)
     
     else:

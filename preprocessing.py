@@ -18,14 +18,15 @@ from sklearn.model_selection import train_test_split
 
 
 #Ce script va filtrer les lignes sur lesquelles nous voulons entrainer l'algorithme.
-#Nous n'allons considerer que les codes pour lesquels nous avons des ventes
+
+
 
 class training_set_preprocessing:
-    #Use only Sales bigger than zero. Simplifies calculation of rmspe
     
     
     def training_set_cleaning(df):
         
+        print('Cleaning Data...')
         columns = df.columns
         
         columns_to_drop = ['Annee', 
@@ -41,7 +42,8 @@ class training_set_preprocessing:
                            'CodeSAPProduit',
                            'EANProduit', 
                            'NomProduit',
-                           'Mecanique']
+                           'Mecanique',
+                           'UmbrellaBrand']
         
         
         for col in columns_to_drop:
@@ -52,40 +54,103 @@ class training_set_preprocessing:
                 df = df.drop([col], axis = 1)
             else:
                 pass
-            
+        
+        df = df.dropna()
+        print('Data cleansing done\n')
+        
         return df
     
+    
+    
+    
+    def data_forward_transform(df):
+        print('Transforming skewed columns for Normal distribution approximation...')
+        
+        columns_to_log_transform = ['CAMagasin',
+                                    'BaselineOSA',
+                                    'DureeEnJoursDepuisLancement',
+                                    'MaxVentesEANPasseeEnUC',
+                                    'TotalVentesUCMarque',
+                                    'TotalVentesProductBrandEnUC',
+                                    'PreviVol',
+                                    'IndiceMagPromophile',
+                                    'NBCodesJoues',
+                                    'NBJours',
+                                    'TauxDeDegradation',
+                                    #'NBProductBrandJoues',
+                                    'VentesUC']
+        
+        for col in columns_to_log_transform:
+            df[col+'_log_transformed'] = np.log(df[col]+1)
+            df = df.drop(col, axis=1)
+        return df
+        
+        
+        
+        
+    def data_back_transform(df):
+        transformed_cols = [col for col in df.columns if '_log_transform' in col]
+        
+        for col in transformed_cols:
+            
+            df[col.replace("_log_transformed","")] = 10**df[col] - 1
+            df = df.drop('col', axis = 1)
+            
+        print ( 'Data transformation done\n')
+        
+        return df
+    
+    
+    
+    
     def preco_features(df):
-        features = df.drop(['VentesUC'], axis=1)
+        
+        target_col = [col for col in list(df) if 'VentesUC_log' in col]
+        
+        features = df.drop([target_col[0]], axis=1)
         feature_names = list(features)
+        
         return features, feature_names
     
     def preco_target(df):
-        target = pd.DataFrame(df['VentesUC'])
-        target_name = list(target)
+        target_col = [col for col in list(df) if 'VentesUC_log' in col]
+        
+        target = pd.DataFrame(df[target_col])
+        target_name = target_col
+        
         return target, target_name
 
+    
+    
+    
     
     def feature_encoding(df):
         """
         Cette fonction réalise l'encodage des colonnes catégoriques ou non selon differentes stratégies:
         - Pour les colonnes catégoriques très spécifiques et à grand nombre de niveaux (code SAP, nom magasin, ...), la fonction va soit faire un label encoding, soit supprimer la colonne afin d'utiliser d'autres colonnes
-        - Pour les colonnes catégoriques à nombre de niveau plus faible (<15), la fonction va réaliser un One Hot Encoding
+        - Pour les colonnes catégoriques à nombre de niveau plus faible (<10), la fonction va réaliser un One Hot Encoding
         - Pour certaines colonnes du choix de l'utilisateur, une stratégie plus spécifique peut être définie
         
         La fonction renvoie le dataframe encodé.
         """
+        print('Feature encoding...')
+        
+        
         categorical_columns = list(df.select_dtypes(include=['category','object']))
                    
             
         specific_columns = []        
         
         data = df.copy()
+        
         for col in categorical_columns:
             if col in specific_columns:
                 pass
-            elif len(data[col].unique()) > 15:
+            elif len(data[col].unique()) > 10:
                 data = data.drop([col], axis=1)
             else:
                 data = pd.concat([data,pd.get_dummies(data[col],prefix=col)],axis=1).drop([col],axis=1)
+                
+        print('Feature encoding done\n')
+        
         return data

@@ -34,7 +34,8 @@ class data_extraction:
             
             print('\nloading training data from csv file...')
             #Charge la BDD Promo à partir du csv
-            df = pd.read_csv('../Precos_OSA/data/BDD_Promo_V2.csv', sep=',')
+            df = pd.read_csv('../Precos_OSA/data/BDD_Promos_V2.csv', sep=',')
+            df = df.drop(['Unnamed: 0'], axis = 1)
             
         elif data_source == 'BigQuery':
             print('\nQuerying BigQuery for training data...')
