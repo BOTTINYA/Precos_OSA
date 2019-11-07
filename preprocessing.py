@@ -43,7 +43,8 @@ class training_set_preprocessing:
                            'EANProduit', 
                            'NomProduit',
                            'Mecanique',
-                           'UmbrellaBrand']
+                           'UmbrellaBrand',
+                           'MaxVentesEANPasseeEnUC']
         
         
         for col in columns_to_drop:
@@ -69,7 +70,6 @@ class training_set_preprocessing:
         columns_to_log_transform = ['CAMagasin',
                                     'BaselineOSA',
                                     'DureeEnJoursDepuisLancement',
-                                    'MaxVentesEANPasseeEnUC',
                                     'TotalVentesUCMarque',
                                     'TotalVentesProductBrandEnUC',
                                     'PreviVol',

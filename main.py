@@ -112,6 +112,7 @@ if Training_of_model == 'Y':
     
         # Entrainer le modèle pour validation et interpretation
         model, watchlist = model_training.train_validate_model(df_encoded, enseigne)
+        print(model.get_params)
     
     else:
         """ On va entrainer le modèle en vue de déploiement, puis faire les prédictions sur celui-ci.
@@ -126,25 +127,28 @@ else:
     print('Predictions will be performed using trained_XGB_'+enseigne+'.joblib regression model')
     
     #Get data to perform prediction on
-    F = data.data_extraction.Forecast('csv')
+    F = data.data_extraction.Forecast('BigQuery', enseigne)
     
-    #Get training features
-    #Data extraction for used to train model
-    df = data.data_extraction.BDD_Promo('BigQuery', enseigne)
+
     #Data Cleaning
-    df_clean = preprocessing.training_set_preprocessing.training_set_cleaning(df)
+    F_clean = preprocessing.training_set_preprocessing.training_set_cleaning(F)
+    
+    #Data Transforamtion pour normalisation des colonnes Skewed
+    F_transform = preprocessing.training_set_preprocessing.data_forward_transform(F_clean)
     
     #Data Encoding
-    df_encoded = preprocessing.training_set_preprocessing.feature_encoding(df_clean)
+    print('\nPerforming training data encoding')
+    F_encoded = preprocessing.training_set_preprocessing.feature_encoding(F_transform)
+    print('Data encoding finished\n')
 
     
-    _,features = preprocessing.training_set_preprocessing.preco_features(df_train)
+    _,features = preprocessing.training_set_preprocessing.preco_features(F)
     
     #Perform predictions
     y_pred = predictions.perform_predictions(F,features,gbm)
     y_pred = np.round_(y_pred, decimals = 0)
     
-    df_pred = pd.DataFrame(data = y_pred, columns = ['Preconisations_Ventes'])    #construction du DataFrame pour concatenation des données de préco
+    df_pred = pd.DataFrame(data = y_pred, columns = ['PreconisationVentesUC'])    #construction du DataFrame pour concatenation des données de préco
     
     #Construction du DataFrame final des preco
     Precos = pd.concat([F[features],df_pred], axis = 1)
