@@ -24,8 +24,8 @@ xgb_params = functions.load_obj('xgb_params_'+enseigne)
 
 
 xgb_grid = {'max_depth':[7, 9], 
-            'learning_rate':[0.01,0.1, 0.3],
-            'n_estimators':[100, 250, 500] ,
+            'learning_rate':[0.1, 0.3],
+            'n_estimators':[100, 250, 400] ,
             'verbosity':[1], 
             'silent':[0], 
             'objective':['reg:squarederror' ],  #Cet objectif est l'objectif RMSE classique pour des regressions

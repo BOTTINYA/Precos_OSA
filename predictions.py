@@ -14,6 +14,7 @@ Created on 09/09/2019
 import xgboost as xgb
 import numpy as np
 import pandas as pd
+import math
 
 
 
@@ -27,8 +28,8 @@ def perform_predictions(data,features,model):
     dforecast = xgb.DMatrix(data[features])
     forecast_transformed = model.predict(dforecast)
     
-    #perform backtransform of prediction
-    forecast = 10**forecast_transformed-1
+    #perform backtransform of prediction values
+    forecast = np.exp(forecast_transformed)-1
     
     print('\nPredictions finished')
     return forecast

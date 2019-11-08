@@ -142,17 +142,18 @@ else:
     print('Data encoding finished\n')
 
     
-    _,features = preprocessing.training_set_preprocessing.preco_features(F)
+    _,features = preprocessing.training_set_preprocessing.preco_features(F_transform)
     
     #Perform predictions
-    y_pred = predictions.perform_predictions(F,features,gbm)
+    y_pred = predictions.perform_predictions(F_transform,features,gbm)
     y_pred = np.round_(y_pred, decimals = 0)
     
     df_pred = pd.DataFrame(data = y_pred, columns = ['PreconisationVentesUC'])    #construction du DataFrame pour concatenation des données de préco
     
     #Construction du DataFrame final des preco
-    Precos = pd.concat([F[features],df_pred], axis = 1)
-    Precos = Precos.dropna()
+    Precos = pd.concat([F,df_pred], axis = 1)
+    #Precos = Precos.dropna()
     
+    Precos.to_csv('../Precos_OSA/data/test_predictions_precos.csv')
     #exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
     #exportation.export_forecast_to_GCS(Precos, bucket_name, file_destination_name)

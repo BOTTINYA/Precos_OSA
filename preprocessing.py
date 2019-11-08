@@ -70,7 +70,7 @@ class training_set_preprocessing:
         columns_to_log_transform = ['CAMagasin',
                                     'BaselineOSA',
                                     'DureeEnJoursDepuisLancement',
-                                    'TotalVentesUCMarque',
+                                    'TotalVentesMarqueUC',
                                     'TotalVentesProductBrandEnUC',
                                     'PreviVol',
                                     'IndiceMagPromophile',
@@ -93,9 +93,9 @@ class training_set_preprocessing:
         
         for col in transformed_cols:
             
-            df[col.replace("_log_transformed","")] = 10**df[col] - 1
-            df = df.drop('col', axis = 1)
-            
+            #df[col.replace("_log_transformed","")] = np.exp(df[col]) - 1
+            #df = df.drop('col', axis = 1)
+            pass
         print ( 'Data transformation done\n')
         
         return df
@@ -105,7 +105,8 @@ class training_set_preprocessing:
     
     def preco_features(df):
         
-        target_col = [col for col in list(df) if 'VentesUC_log' in col]
+        target_col = [col for col in list(df) if 'VentesUC' in col]
+        
         
         features = df.drop([target_col[0]], axis=1)
         feature_names = list(features)
@@ -113,7 +114,7 @@ class training_set_preprocessing:
         return features, feature_names
     
     def preco_target(df):
-        target_col = [col for col in list(df) if 'VentesUC_log' in col]
+        target_col = [col for col in list(df) if 'VentesUC' in col]
         
         target = pd.DataFrame(df[target_col])
         target_name = target_col

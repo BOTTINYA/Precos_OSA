@@ -76,7 +76,7 @@ class data_extraction:
             df = pd.read_csv('../Precos_OSA/data/Forecast.csv', sep=';')
         elif data_source == 'BigQuery':
             nom_ope = input("Sur quelle OP voulez-vous réaliser des précos ? (Entrer le nom de l'OP à l'identique de Recas CAS)")
-            date_debut_conso = input("Quelle est la date de début de conso de l'OP ? (Entrer la date à l'identique de Recas CAS)")
+            date_debut_conso = input("Quelle est la date de début de conso de l'OP ? (Entrer la date au format AAAA-MM-JJ)")
             
             print('\nQuerying BigQuery for prediction data...')
 
