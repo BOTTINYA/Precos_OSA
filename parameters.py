@@ -23,19 +23,19 @@ xgb_params = functions.load_obj('xgb_params_'+enseigne)
 #xgb_params = functions.load_obj('xgb_params')
 
 
-xgb_grid = {'max_depth':[7,9], 
-            #'learning_rate':[0.1, 0.3],
-            'n_estimators':[100,250] ,
+xgb_grid = {'max_depth':[7, 9], 
+            'learning_rate':[0.01,0.1, 0.3],
+            'n_estimators':[100, 250, 500] ,
             'verbosity':[1], 
             'silent':[0], 
-            'objective':['reg:squarederror'],
+            'objective':['reg:squarederror' ],  #Cet objectif est l'objectif RMSE classique pour des regressions
             'booster':['gbtree'],
             'n_jobs':[-1], 
             'nthread':[-1], 
-            'gamma':[0, 0.1],  
-            'reg_alpha':[0, 0.1 , 0.5], 
-            'reg_lambda':[0,0.5,1, 1.3],
+            'gamma':[0.1],  
+            'reg_alpha':[0.5 ,1, 2], 
+            'reg_lambda':[0.5, 1, 2],
             'importance_type':['gain']}
 
-num_boost_round = 50
-early_stopping_rounds = 50
+num_boost_round = 200
+early_stopping_rounds = 5

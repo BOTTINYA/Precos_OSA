@@ -18,6 +18,7 @@ import exportation
 import settings
 
 import joblib
+import string
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -35,7 +36,7 @@ enseigne = settings.enseigne
 # --------------- Ce que l'on souhaite faire avec le modèle ----------------------
 Training_of_model = input('Souhaitez-vous ré-entrainer le modèle ? (Y/n)')                                                          #Veut-on ré-entrainer le modèle ?
 For_Deployment = 'n'
-if Training_of_model == 'Y':
+if Training_of_model.upper() == 'Y':
     For_Deployment = input('Souhaitez-vous ré-entrainer le modèle pour déploiement ou phase de test ? (Y pour deploiement/ n pour phase de test)')   #Si nous ré-entrainons le modèle, veut-on faire l'étape de validation ou souhaitons-nous le l'entrainer sur toutes les données pour le déployer ensuite ?
 
     
@@ -56,7 +57,7 @@ if Training_of_model == 'Y':
 
 
 # ------------------ Entrainement du modèle -------------------------
-if Training_of_model == 'Y':
+if Training_of_model.upper() == 'Y':
     """
     Dans un premier temps, on verifie si on souhaite ré-entrainer le modèle, 
     et si oui, est-ce dans le but de le déployer ou de tester des paramètres en vue de validation.
@@ -64,7 +65,7 @@ if Training_of_model == 'Y':
     
       
     #Data extraction for training model
-    df = data.data_extraction.BDD_Promo('csv', enseigne)
+    df = data.data_extraction.BDD_Promo('BigQuery', enseigne)
     #Data Cleaning
     df_clean = preprocessing.training_set_preprocessing.training_set_cleaning(df)
     
@@ -78,7 +79,7 @@ if Training_of_model == 'Y':
     
     
     
-    if For_Deployment == 'n':      
+    if For_Deployment.upper() == 'N':      
         """Souhaite-t-on faire l'étape de validation ?"""
         
        #Afficher la distribution des données
@@ -112,7 +113,6 @@ if Training_of_model == 'Y':
     
         # Entrainer le modèle pour validation et interpretation
         model, watchlist = model_training.train_validate_model(df_encoded, enseigne)
-        print(model.get_params)
     
     else:
         """ On va entrainer le modèle en vue de déploiement, puis faire les prédictions sur celui-ci.

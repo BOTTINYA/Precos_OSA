@@ -88,13 +88,16 @@ def train_validate_model(df,enseigne):
     
     
     htuning = input('Voulez-vous faire un tuning automatique des Hyperparamètres du modèle ? (Y/n)')
-    if htuning == 'Y':
+    if htuning.upper() == 'Y':
         #Model tuning
         print("Performing Grid Search on the model")
         gbm = xgb.XGBRegressor()
 
-        reg = GridSearchCV(gbm, param_grid = parameters.xgb_grid, cv = 3, verbose = 2, n_jobs = -1)
+        reg = GridSearchCV(gbm, param_grid = parameters.xgb_grid, cv = 3, verbose = 1, n_jobs = -1)
         reg.fit(X_train,y_train)
+        
+        print('\nBest found Parameters for model are :')
+        print(reg.best_params_)
         
         gbm = xgb.train(reg.best_params_, dtrain, num_boost_round = parameters.num_boost_round, evals=watchlist, early_stopping_rounds=parameters.early_stopping_rounds, verbose_eval=50) 
         
@@ -102,6 +105,8 @@ def train_validate_model(df,enseigne):
         #Model training
         print("Training a XGBoost model")
         gbm = xgb.train(parameters.xgb_params, dtrain, num_boost_round = parameters.num_boost_round, evals=watchlist, early_stopping_rounds=parameters.early_stopping_rounds, verbose_eval=50)
+    
+    
     
 
     print("\nPerformance on  training set")
@@ -136,25 +141,28 @@ def train_validate_model(df,enseigne):
     print('R Squarred (adj): {:.6f}'.format(adj_2))
     
     
-    
-    
     # Evaluation metrics
     #------------------- Plot feature importances ----------------
     xgb.plot_importance(booster = gbm, show_values = False, importance_type = 'gain')
     plt.show()
     
     # ------------------- Perform SHAP Analysis on training data --------------------
-    X_shap, _, y_shap, _ = train_test_split(X_train, y_train, test_size = 0.7)  #reduction du nombre de lignes a analyser
+    X_shap, _, y_shap, _ = train_test_split(X_train, y_train, test_size = 0.85)  #reduction du nombre de lignes a analyser
     SHAP_Analysis(gbm, X_shap, y_shap, feature_names)
     
+
     
-    
-    if (htuning == 'Y'):
-        ask_save_params = input('Do you want to save these hyperparameters ? (Y/n)')
-        if (ask_save_params == 'Y'):
-            functions.save_obj(reg.best_params_, 'xgb_params_'+enseigne )
-            print('Hyperparameters saved in local directory as "xgb_params_<enseigne>.pkl". They are loaded in parameters.py for ulterior use')
-            print('To save a trained model with the found parameters, re-run main.py, retrain a model for deployment.')
+    functions.save_obj(reg.best_params_, 'xgb_params_'+enseigne )
+    print('Hyperparameters saved in local directory as "xgb_params_<enseigne>.pkl". They are loaded in parameters.py for ulterior use')
+    print('To save a trained model with the found parameters, re-run main.py, retrain a model for deployment.')
+   
+
+    #if (htuning == 'Y'):
+        #ask_save_params = input('Do you want to save these hyperparameters ? (Y/n)')
+        #if (ask_save_params == 'Y'):
+            #functions.save_obj(reg.best_params_, 'xgb_params_'+enseigne )
+            #print('Hyperparameters saved in local directory as "xgb_params_<enseigne>.pkl". They are loaded in parameters.py for ulterior use')
+            #print('To save a trained model with the found parameters, re-run main.py, retrain a model for deployment.')
    
         
 
@@ -199,4 +207,6 @@ def train_deploy_model(df,enseigne):
     
     #Save Trained Model
     dump(gbm, 'trained_XBG_'+enseigne+'.joblib')
+    
+    print('Model saved in local directory as "trained_XGB_<enseigne>.joblib"')
 
