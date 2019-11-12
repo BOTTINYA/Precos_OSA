@@ -66,7 +66,7 @@ class training_set_preprocessing:
     
     def data_forward_transform(df):
         print('Transforming skewed columns for Normal distribution approximation...')
-        
+        columns = df.columns
         columns_to_log_transform = ['CAMagasin',
                                     'BaselineOSA',
                                     'DureeEnJoursDepuisLancement',
@@ -77,10 +77,10 @@ class training_set_preprocessing:
                                     'NBCodesJoues',
                                     'NBJours',
                                     'TauxDeDegradation',
-                                    #'NBProductBrandJoues',
+                                    'NBProductBrandJoues',
                                     'VentesUC']
         
-        for col in columns_to_log_transform:
+        for col in (set(columns_to_log_transform) & set (columns)):
             df[col+'_log_transformed'] = np.log(df[col]+1)
             df = df.drop(col, axis=1)
         return df
@@ -92,9 +92,8 @@ class training_set_preprocessing:
         transformed_cols = [col for col in df.columns if '_log_transform' in col]
         
         for col in transformed_cols:
-            
-            #df[col.replace("_log_transformed","")] = np.exp(df[col]) - 1
-            #df = df.drop('col', axis = 1)
+            df[col.replace("_log_transformed","")] = np.exp(df[col]) - 1
+            df = df.drop('col', axis = 1)
             pass
         print ( 'Data transformation done\n')
         

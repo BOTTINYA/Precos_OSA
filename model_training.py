@@ -111,19 +111,21 @@ def train_validate_model(df,enseigne):
 
     print("\nPerformance on  training set")
     dtest = xgb.DMatrix(X_train[features])
-    test_probs = gbm.predict(dtrain)
-    error_test = metrics.rmspe(y_train.VentesUC_log_transformed.values, test_probs)
-    R_squarred = r2_score(y_train.VentesUC_log_transformed.values, test_probs)
-    adj_2 = metrics.adjusted_r2(feature_names,y_train.VentesUC_log_transformed.values, test_probs)
+    test_probs = np.exp(gbm.predict(dtrain)) - 1
+    error_test = metrics.rmspe(np.exp(y_train.VentesUC_log_transformed.values)-1, test_probs)
+    R_squarred = r2_score(np.exp(y_train.VentesUC_log_transformed.values)-1, test_probs)
+    adj_2 = metrics.adjusted_r2(feature_names,np.exp(y_train.VentesUC_log_transformed.values)-1, test_probs)
     print('RMSPE: {:.6f}'.format(error_test))
     print('R Squarred: {:.6f}'.format(R_squarred))
     print('R Squarred (adj): {:.6f}'.format(adj_2))
     
+    
+    
     print("\nPerformance on Validation set")
-    yhat = gbm.predict(xgb.DMatrix(X_valid[features]))
-    error = metrics.rmspe(y_valid.VentesUC_log_transformed.values, yhat)
-    R_squarred = r2_score(y_valid.VentesUC_log_transformed.values, yhat)
-    adj_2 = metrics.adjusted_r2(feature_names,y_valid.VentesUC_log_transformed.values, yhat)
+    yhat = np.exp(gbm.predict(xgb.DMatrix(X_valid[features])))-1
+    error = metrics.rmspe(np.exp(y_valid.VentesUC_log_transformed.values) - 1, yhat)
+    R_squarred = r2_score(np.exp(y_valid.VentesUC_log_transformed.values) - 1, yhat)
+    adj_2 = metrics.adjusted_r2(feature_names,np.exp(y_valid.VentesUC_log_transformed.values) - 1, yhat)
     print('RMSPE: {:.6f}'.format(error_test))
     print('R Squarred: {:.6f}'.format(R_squarred))
     print('R Squarred (adj): {:.6f}'.format(adj_2))
@@ -132,10 +134,10 @@ def train_validate_model(df,enseigne):
 
     print("\nPerformance on test set")
     dtest = xgb.DMatrix(X_test[features])
-    test_probs = gbm.predict(dtest)
-    error_test = metrics.rmspe(y_test.VentesUC_log_transformed.values, test_probs)
-    R_squarred = r2_score(y_test.VentesUC_log_transformed.values, test_probs)
-    adj_2 = metrics.adjusted_r2(feature_names,y_test.VentesUC_log_transformed.values, test_probs)
+    test_probs = np.exp(gbm.predict(dtest)) - 1
+    error_test = metrics.rmspe(np.exp(y_test.VentesUC_log_transformed.values) - 1, test_probs)
+    R_squarred = r2_score(np.exp(y_test.VentesUC_log_transformed.values) - 1, test_probs)
+    adj_2 = metrics.adjusted_r2(feature_names,np.exp(y_test.VentesUC_log_transformed.values) - 1, test_probs)
     print('RMSPE: {:.6f}'.format(error_test))
     print('R Squarred: {:.6f}'.format(R_squarred))
     print('R Squarred (adj): {:.6f}'.format(adj_2))
