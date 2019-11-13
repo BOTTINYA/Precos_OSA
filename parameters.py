@@ -37,5 +37,5 @@ xgb_grid = {'max_depth':[7, 9],
             'reg_lambda':[0.5, 1],
             'importance_type':['gain']}
 
-num_boost_round = 2000
+num_boost_round = 500
 early_stopping_rounds = 10

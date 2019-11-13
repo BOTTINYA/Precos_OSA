@@ -27,7 +27,7 @@ def perform_predictions(data,features,model):
     print('\nPerforming predictions from the trained model')
     dforecast = xgb.DMatrix(data[features])
     
-    target_col = [col for col in list(data) if 'VentesUC' in col]
+    target_col = [col for col in list(data) if 'VentesUC_log_transformed' in col]
     
     
     if 'transformed' in target_col[0]:

@@ -48,7 +48,8 @@ class training_set_preprocessing:
         
         
         for col in columns_to_drop:
-            df = df.drop([col], axis = 1)
+            #df = df.drop([col], axis = 1)
+            pass
         
         for col in (set(columns) - set(columns_to_drop)):                        #On vire les colonnes ou toutes les valeurs de la colonne sont nulles
             if df[col].isnull().all() == True:
@@ -56,10 +57,10 @@ class training_set_preprocessing:
             else:
                 pass
         
-        df = df.dropna()
+        #df = df.dropna()
         print('Data cleansing done\n')
         
-        return df
+        return df, columns_to_drop
     
     
     
@@ -82,7 +83,6 @@ class training_set_preprocessing:
         
         for col in (set(columns_to_log_transform) & set (columns)):
             df[col+'_log_transformed'] = np.log(df[col]+1)
-            df = df.drop(col, axis=1)
         return df
         
         
@@ -113,7 +113,7 @@ class training_set_preprocessing:
         return features, feature_names
     
     def preco_target(df):
-        target_col = [col for col in list(df) if 'VentesUC' in col]
+        target_col = [col for col in list(df) if 'VentesUC_log_transformed' in col]
         
         target = pd.DataFrame(df[target_col])
         target_name = target_col
@@ -146,10 +146,12 @@ class training_set_preprocessing:
         for col in categorical_columns:
             if col in specific_columns:
                 pass
-            elif len(data[col].unique()) > 10:
-                data = data.drop([col], axis=1)
+            elif len(data[col].unique()) > 3:
+                pass
+                #data = data.drop([col], axis=1)
             else:
-                data = pd.concat([data,pd.get_dummies(data[col],prefix=col)],axis=1).drop([col],axis=1)
+                pass
+                #data = pd.concat([data,pd.get_dummies(data[col],prefix=col)],axis=1).drop([col],axis=1)
                 
         print('Feature encoding done\n')
         

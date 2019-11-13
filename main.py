@@ -67,7 +67,9 @@ if Training_of_model.upper() == 'Y':
     #Data extraction for training model
     df = data.data_extraction.BDD_Promo('BigQuery', enseigne)
     #Data Cleaning
-    df_clean = preprocessing.training_set_preprocessing.training_set_cleaning(df)
+    df_clean, identification_columns = preprocessing.training_set_preprocessing.training_set_cleaning(df)      #identification_columns est une liste des colonnes qui ne seront pas utilisées par l'algo pour les
+                                                                                                               #prédictions mais qui sont nécessaires pour l'identification du mag et 
+                                                                                                               #de l'EAN sur lequel on va faire la préco
     
     #Data Transforamtion pour normalisation des colonnes Skewed
     df_transform = preprocessing.training_set_preprocessing.data_forward_transform(df_clean)
@@ -79,6 +81,22 @@ if Training_of_model.upper() == 'Y':
     
     
     
+    #Selecting only training columns from DataFrame
+    transformed_columns = [col for col in df_encoded if 'transformed' in col]
+    training_columns = list(df_encoded.columns)
+    
+    for x in df_encoded.columns:
+        if set([x+'_log_transformed']) & set(transformed_columns) != set():
+            training_columns.pop(training_columns.index(x))
+
+    final_training_columns = np.setdiff1d(training_columns,identification_columns)
+    
+    
+    
+    df_encoded = df_encoded.dropna()
+    
+    
+    
     if For_Deployment.upper() == 'N':      
         """Souhaite-t-on faire l'étape de validation ?"""
         
@@ -87,7 +105,7 @@ if Training_of_model.upper() == 'Y':
         fig = plt.figure
         fig(figsize =(20,30))
         i=0
-        for col in df_encoded.columns:
+        for col in final_training_columns:
             plt.subplot(7, 4, i + 1)
             plt.title(col)
             sns.distplot(df_encoded[[col]],  kde_kws={'bw':0.3})
@@ -100,7 +118,7 @@ if Training_of_model.upper() == 'Y':
     
         #Afficher la matrice de correlation des colonnes
         print('Affichage de la corrélation des colonnes\n')
-        X_corr = df_encoded.corr()
+        X_corr = df_encoded[final_training_columns].corr()
         mask = np.zeros_like(X_corr, dtype=np.bool)
         mask[np.triu_indices_from(mask)] = True
 
@@ -112,12 +130,12 @@ if Training_of_model.upper() == 'Y':
         print('\n')
     
         # Entrainer le modèle pour validation et interpretation
-        model, watchlist = model_training.train_validate_model(df_encoded, enseigne)
+        model, watchlist = model_training.train_validate_model(df_encoded[final_training_columns], enseigne)
     
     else:
         """ On va entrainer le modèle en vue de déploiement, puis faire les prédictions sur celui-ci.
         """
-        model_training.train_deploy_model(df_encoded,enseigne)
+        model_training.train_deploy_model(df_encoded[final_training_columns],enseigne)
         
         
 # --------------------- On souhaite utiliser le modèle sauvegardé -------------------
@@ -131,7 +149,7 @@ else:
     
 
     #Data Cleaning
-    F_clean = preprocessing.training_set_preprocessing.training_set_cleaning(F)
+    F_clean, identification_columns = preprocessing.training_set_preprocessing.training_set_cleaning(F)
     
     #Data Transforamtion pour normalisation des colonnes Skewed
     F_transform = preprocessing.training_set_preprocessing.data_forward_transform(F_clean)
@@ -142,13 +160,30 @@ else:
     print('Data encoding finished\n')
 
     
-    _,features = preprocessing.training_set_preprocessing.preco_features(F_encoded)
+    
+    #Selecting only training columns from DataFrame
+    transformed_columns = [col for col in F_encoded if 'transformed' in col]
+    training_columns = list(F_encoded.columns)
+    
+    for x in F_encoded.columns:
+        if set([x+'_log_transformed']) & set(transformed_columns) != set():
+            training_columns.pop(training_columns.index(x))
+
+            
+    _,target_column = preprocessing.training_set_preprocessing.preco_target(F_encoded)
+    
+    final_training_columns = np.setdiff1d(np.setdiff1d(training_columns,identification_columns),target_column)
+
+    
+    
     
     #Perform predictions
-    y_pred = predictions.perform_predictions(F_encoded,features,gbm)
+    y_pred = predictions.perform_predictions(F_encoded,final_training_columns,gbm)
     y_pred = np.round_(y_pred, decimals = 0)
     
     df_pred = pd.DataFrame(data = y_pred, columns = ['PreconisationVentesUC'])    #construction du DataFrame pour concatenation des données de préco
+    
+    
     
     #Construction du DataFrame des preco
     Forecast = pd.concat([F_encoded,df_pred],axis = 1)
