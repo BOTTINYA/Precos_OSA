@@ -102,5 +102,5 @@ class data_extraction:
         else:
             raise ValueError('Veuillez utiliser csv ou BigQuery en argument de l objet data_extraction')
         
-        return df
+        return df, nom_ope
 

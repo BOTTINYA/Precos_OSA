@@ -145,7 +145,7 @@ else:
     print('Predictions will be performed using trained_XGB_'+enseigne+'.joblib regression model')
     
     #Get data to perform prediction on
-    F = data.data_extraction.Forecast('BigQuery', enseigne)
+    F, nom_ope = data.data_extraction.Forecast('BigQuery', enseigne)
     
 
     #Data Cleaning
@@ -179,20 +179,18 @@ else:
     
     #Perform predictions
     y_pred = predictions.perform_predictions(F_encoded,final_training_columns,gbm)
-    y_pred = np.round_(y_pred, decimals = 0)
+    y_pred = np.int_(np.round_(y_pred, decimals = 0))
     
     df_pred = pd.DataFrame(data = y_pred, columns = ['PreconisationVentesUC'])    #construction du DataFrame pour concatenation des données de préco
     
     
     
     #Construction du DataFrame des preco
-    Forecast = pd.concat([F_encoded,df_pred],axis = 1)
-    Forecast['VentesUC'] = np.exp(Forecast['VentesUC_log_transformed'])-1
+    identification_columns.append('VentesUC')
     
+    Forecast = pd.concat([F_encoded[identification_columns],df_pred],axis = 1)
+
     
-    #Precos = pd.concat([F,df_pred], axis = 1)
-    #Precos = Precos.dropna()
-    
-    Forecast.to_csv('../Precos_OSA/data/test_predictions_precos.csv')
+    Forecast.to_csv('../Precos_OSA/data/Precos_'+nom_ope+'.csv')
     #exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
     #exportation.export_forecast_to_GCS(Precos, bucket_name, file_destination_name)

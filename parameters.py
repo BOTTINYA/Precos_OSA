@@ -23,7 +23,7 @@ xgb_params = functions.load_obj('xgb_params_'+enseigne)
 #xgb_params = functions.load_obj('xgb_params')
 
 
-xgb_grid = {'max_depth':[7, 9], 
+xgb_grid = {'max_depth':[7, 9, 11], 
             'learning_rate':[0.1],
             'n_estimators':[250, 400] ,
             'verbosity':[1], 
@@ -32,9 +32,9 @@ xgb_grid = {'max_depth':[7, 9],
             'booster':['gbtree'],
             'n_jobs':[-1], 
             'nthread':[-1], 
-            'gamma':[0.01],  
+            'gamma':[0.05],  
             'reg_alpha':[0.5 ,1], 
-            'reg_lambda':[0.5, 1],
+            'reg_lambda':[0.7, 1, 1.5],
             'importance_type':['gain']}
 
 num_boost_round = 500

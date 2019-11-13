@@ -156,21 +156,6 @@ def train_validate_model(df,enseigne):
     SHAP_Analysis(gbm, X_shap, y_shap, feature_names)
     
 
-    
-    functions.save_obj(reg.best_params_, 'xgb_params_'+enseigne )
-    print('Hyperparameters saved in local directory as "xgb_params_<enseigne>.pkl". They are loaded in parameters.py for ulterior use')
-    print('To save a trained model with the found parameters, re-run main.py, retrain a model for deployment.')
-   
-
-    #if (htuning == 'Y'):
-        #ask_save_params = input('Do you want to save these hyperparameters ? (Y/n)')
-        #if (ask_save_params == 'Y'):
-            #functions.save_obj(reg.best_params_, 'xgb_params_'+enseigne )
-            #print('Hyperparameters saved in local directory as "xgb_params_<enseigne>.pkl". They are loaded in parameters.py for ulterior use')
-            #print('To save a trained model with the found parameters, re-run main.py, retrain a model for deployment.')
-   
-        
-
     return gbm, watchlist
 
 
