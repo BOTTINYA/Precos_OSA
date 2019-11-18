@@ -29,7 +29,8 @@ class training_set_preprocessing:
         print('Cleaning Data...')
         columns = df.columns
         
-        columns_to_drop = ['Annee', 
+        columns_to_drop = ['Confirmation',
+                           'Annee', 
                            'NomOpe', 
                            'SemaineDebut',
                            'DateDebutConso', 

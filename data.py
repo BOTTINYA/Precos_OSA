@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import operator
 import settings
+import string
 
 from time import time
 
@@ -79,6 +80,12 @@ class data_extraction:
         elif data_source == 'BigQuery':
             nom_ope = input("Sur quelle OP voulez-vous réaliser des précos ? (Entrer le nom de l'OP à l'identique de Recas CAS)")
             date_debut_conso = input("Quelle est la date de début de conso de l'OP ? (Entrer la date au format AAAA-MM-JJ)")
+            status_promo = input("Voulez-vous faire des précos sur les codes Acceptés uniquement ? Ou sur les codes proposés également ? (Acceptés uniquement Y / n Proposés également)")
+            
+            if status_promo.upper() == 'Y':
+                confirmation = '%Acceptée%'
+            else:
+                confirmation = '%%'
             
             print('\nQuerying BigQuery for prediction data...')
 
@@ -90,7 +97,9 @@ class data_extraction:
             WHERE 
                 NomOpe LIKE '"""+nom_ope+"""'
                 AND DateDebutConso = '"""+date_debut_conso+"""'
-                AND Enseigne LIKE UPPER('"""+enseigne+"""')""" 
+                AND Enseigne LIKE UPPER('"""+enseigne+"""')
+                AND Confirmation LIKE '"""+confirmation+"""'"""
+                
             
 
             start_time = time()
