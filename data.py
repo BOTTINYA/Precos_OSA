@@ -44,15 +44,17 @@ class data_extraction:
             SELECT DISTINCT
                 * 
             FROM 
-                `osa-2019.Performance_Promos.HistoriquePromoPourTrainingAlgo` 
-            WHERE Enseigne LIKE UPPER('"""+enseigne+"""')""" 
+                `osa-2019.Performance_Promos.HistoriquePromoPourPredictions`
+            WHERE 
+                VentesUC > 0
+                AND Enseigne LIKE UPPER('"""+enseigne+"""')""" 
             
 
             start_time = time()
 
             df = client.query(sql).to_dataframe()         #Interrogation de BigQuery 
             
-            df.to_csv('../Precos_OSA/data/BDD_Promos_V2.csv')
+            #df.to_csv('../Precos_OSA/data/BDD_Promos_V2.csv')
 
             print('Querying and loading time = {:0.2f} s '.format(time() - start_time))
             print('Request finished\n')
@@ -84,7 +86,7 @@ class data_extraction:
             SELECT DISTINCT
                 * 
             FROM 
-                `osa-2019.Performance_Promos.HistoriquePromoPourTrainingAlgo` 
+                `osa-2019.Performance_Promos.HistoriquePromoPourPredictions` 
             WHERE 
                 NomOpe LIKE '"""+nom_ope+"""'
                 AND DateDebutConso = '"""+date_debut_conso+"""'

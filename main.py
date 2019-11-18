@@ -186,7 +186,7 @@ else:
     
     
     #Construction du DataFrame des preco
-    identification_columns.append('VentesUC')
+    #identification_columns.append('VentesUC')          #Je n'tutilise cette ligne de code uniquement pour tester les perf du code en phase de test
     
     Forecast = pd.concat([F_encoded[identification_columns],df_pred],axis = 1)
 

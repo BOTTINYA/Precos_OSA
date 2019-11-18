@@ -27,15 +27,11 @@ def perform_predictions(data,features,model):
     print('\nPerforming predictions from the trained model')
     dforecast = xgb.DMatrix(data[features])
     
-    target_col = [col for col in list(data) if 'VentesUC_log_transformed' in col]
+    forecast_transformed = model.predict(dforecast)
     
-    
-    if 'transformed' in target_col[0]:
-        forecast_transformed = model.predict(dforecast)
-        #perform backtransform of prediction values
-        forecast = np.exp(forecast_transformed)-1
-    else:
-        forecast = model.predict(dforecast)
+    #perform backtransform of prediction values
+    forecast = np.exp(forecast_transformed)-1
+
     
     print('\nPredictions finished')
     return forecast

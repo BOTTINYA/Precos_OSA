@@ -33,9 +33,9 @@ xgb_grid = {'max_depth':[7, 9, 11],
             'n_jobs':[-1], 
             'nthread':[-1], 
             'gamma':[0.05],  
-            'reg_alpha':[0.5 ,1], 
-            'reg_lambda':[0.7, 1, 1.5],
+            'reg_alpha':[1], 
+            'reg_lambda':[1, 1.5],
             'importance_type':['gain']}
 
-num_boost_round = 500
+num_boost_round = 400
 early_stopping_rounds = 10

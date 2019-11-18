@@ -31,6 +31,7 @@ class training_set_preprocessing:
         
         columns_to_drop = ['Annee', 
                            'NomOpe', 
+                           'SemaineDebut',
                            'DateDebutConso', 
                            'DateFinConso', 
                            'Enseigne',
@@ -43,8 +44,8 @@ class training_set_preprocessing:
                            'EANProduit', 
                            'NomProduit',
                            'Mecanique',
-                           'UmbrellaBrand',
-                           'MaxVentesEANPasseeEnUC']
+                           'MaxVentesEANPasseeEnUC',
+                           'UmbrellaBrand']
         
         
         for col in columns_to_drop:
@@ -74,6 +75,7 @@ class training_set_preprocessing:
                                     'TotalVentesMarqueUC',
                                     'TotalVentesProductBrandEnUC',
                                     'PreviVol',
+                                    'PreviUCRetouche',
                                     'IndiceMagPromophile',
                                     'NBCodesJoues',
                                     'NBJours',

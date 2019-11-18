@@ -171,7 +171,7 @@ def train_deploy_model(df,enseigne):
     
     #split train, validation and testing data
     #cette partie pourra être remplacée par un CV de la librairie sklearn à posteriori
-    X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size = 0.1, random_state=42)
+    X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size = 0.2, random_state=42)
     
     _,features = preprocessing.training_set_preprocessing.preco_features(df)
 
