@@ -23,6 +23,7 @@ xgb_params = functions.load_obj('xgb_params_'+enseigne)
 #xgb_params = functions.load_obj('xgb_params')
 
 
+# ---- Grille des hyperparamètres utilisés pour le hyperparameter tuning ------
 xgb_grid = {'max_depth':[7, 9, 11], 
             'learning_rate':[0.1],
             'n_estimators':[250, 400] ,
@@ -37,5 +38,7 @@ xgb_grid = {'max_depth':[7, 9, 11],
             'reg_lambda':[1, 1.5],
             'importance_type':['gain']}
 
+
+# ----- Paramètres de boosting du XGB ------
 num_boost_round = 400
 early_stopping_rounds = 10

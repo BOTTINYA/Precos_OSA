@@ -44,9 +44,7 @@ if Training_of_model.upper() == 'Y':
 #bigquery_dataset_name = 'osa-2019.Performance_Promos'
 #bigquery_table_name = 'last_precos_raw_'+enseigne+'_test'
 
-# -------------- Identification du bucket dans lequel on va exporter les données -----------------
-#bucket_name = 'osa_data_bucket'
-#file_destination_name = 'last_precos_raw_'+enseigne+'.csv'
+
 
 
 
@@ -89,8 +87,7 @@ if Training_of_model.upper() == 'Y':
         if set([x+'_log_transformed']) & set(transformed_columns) != set():
             training_columns.pop(training_columns.index(x))
 
-    final_training_columns = np.setdiff1d(training_columns,identification_columns)
-    
+    final_training_columns = np.setdiff1d(training_columns,identification_columns)    #Je créer la liste des colonnes qui sont utilisées par le modèle pour entrainement
     
     
     df_encoded = df_encoded.dropna()
@@ -191,6 +188,15 @@ else:
     Forecast = pd.concat([F_encoded[identification_columns],df_pred],axis = 1)
 
     
-    Forecast.to_csv('../Precos_OSA/data/Precos_'+nom_ope+'.csv')
+    Forecast.to_csv('../Precos_OSA/data/Precos_Brutes_'+nom_ope+'.csv')
     #exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
-    #exportation.export_forecast_to_GCS(Precos, bucket_name, file_destination_name)
+    
+    
+    # -------------- Exportation des données dans un bucket -----------------
+    bucket_name = 'osa_data_bucket'
+    file_destination_name = 'Precos_Brutes_'+nom_ope+'.csv'
+    
+    GCS_export = input('\nSouhaitez-vous exporter les précos brutes dans le GCS ? (Y/n)')
+    
+    if GCS_export.upper() == 'Y':
+        exportation.export_forecast_to_GCS(Forecast, bucket_name, file_destination_name)

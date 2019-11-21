@@ -42,7 +42,7 @@ params = parameters.xgb_params
 
 def SHAP_Analysis(model, X, y, feature_names):
     """
-    Function that takes 3 arguments for plotting SHAP Analysis of the model:
+    Function that takes 4 arguments for plotting SHAP Analysis of the model:
     - model : The model we want to explain
     - X : The data features used for training
     - y : The data target used for training
@@ -66,6 +66,13 @@ def SHAP_Analysis(model, X, y, feature_names):
 #---------------- Training methods -----------------------
 
 def train_validate_model(df,enseigne):
+    
+    """
+    Cette fonction est une fonctions qui sert à faire la validation du modèle. 
+    Elle propose de faire un hypermarameter tuning automatique, entraine l'algo et trace les resultats du comportement avec une analyse SHAP.
+    """
+    
+    
     #Get data
     X, feature_names = preprocessing.training_set_preprocessing.preco_features(df)
     y, _ = preprocessing.training_set_preprocessing.preco_target(df)
@@ -150,6 +157,8 @@ def train_validate_model(df,enseigne):
     #------------------- Plot feature importances ----------------
     xgb.plot_importance(booster = gbm, show_values = False, importance_type = 'gain')
     plt.show()
+      
+    
     
     # ------------------- Perform SHAP Analysis on training data --------------------
     X_shap, _, y_shap, _ = train_test_split(X_train, y_train, test_size = 0.9)  #reduction du nombre de lignes a analyser
@@ -163,6 +172,10 @@ def train_validate_model(df,enseigne):
 
     
 def train_deploy_model(df,enseigne):
+    """
+    Cette fonction récupère les hyperparametres enrigistré dans le local directory pour l'enseigne concernée
+    et entraine et suvegarde le modèle de prédiction pour réaliser les prédictions à postériori
+    """
     
     #Get data
     X, _ = preprocessing.training_set_preprocessing.preco_features(df)

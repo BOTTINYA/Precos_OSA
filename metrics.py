@@ -23,8 +23,6 @@ def rmspe(y, yhat):
     yhat[yhat<0]=0
     return np.nanmean(np.absolute(y-yhat))
     
-#    np.minimum(np.absolute(y-yhat)/yhat, 1)
-    
 def rmspe_xg(yhat, y):
     y = y.get_label()
     #y = y.get_label()

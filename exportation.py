@@ -55,7 +55,7 @@ def export_forecast_to_GCS(df, bucket_name, file_destination_name):
     
     df.to_csv(file_destination_name)
 
-    blob=bucket.blob('/suivi_precos/precos_brutes/'+file_destination_name)
+    blob=bucket.blob('suivi_precos/precos_brutes/'+file_destination_name)
     
     print('\nGCS exportation started ...')
     start_time = time()

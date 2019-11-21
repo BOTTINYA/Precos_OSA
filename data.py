@@ -55,7 +55,7 @@ class data_extraction:
 
             df = client.query(sql).to_dataframe()         #Interrogation de BigQuery 
             
-            #df.to_csv('../Precos_OSA/data/BDD_Promos_V2.csv')
+            df.to_csv('../Precos_OSA/data/BDD_Promos_V2.csv')
 
             print('Querying and loading time = {:0.2f} s '.format(time() - start_time))
             print('Request finished\n')
