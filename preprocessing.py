@@ -29,6 +29,8 @@ class training_set_preprocessing:
         print('Cleaning Data...')
         columns = df.columns
         
+        
+        
         columns_to_drop = ['Confirmation',
                            'Annee', 
                            'NomOpe', 
@@ -48,6 +50,8 @@ class training_set_preprocessing:
                            'MaxVentesEANPasseeEnUC',
                            'UmbrellaBrand']
         
+        if 'AUCHAN' in df.Enseigne.unique():
+            columns_to_drop.append('CodeLot')
         
         for col in columns_to_drop:
             #df = df.drop([col], axis = 1)
