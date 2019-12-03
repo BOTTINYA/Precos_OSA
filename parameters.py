@@ -40,5 +40,5 @@ xgb_grid = {'max_depth':[7, 9, 11],
 
 
 # ----- Paramètres de boosting du XGB ------
-num_boost_round = 200
+num_boost_round = 400
 early_stopping_rounds = 10
