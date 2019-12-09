@@ -24,9 +24,9 @@ xgb_params = functions.load_obj('xgb_params_'+enseigne)
 
 
 # ---- Grille des hyperparamètres utilisés pour le hyperparameter tuning ------
-xgb_grid = {'max_depth':[7, 9, 11], 
+xgb_grid = {'max_depth':[9, 11, 13], 
             'learning_rate':[0.1],
-            'n_estimators':[250, 400] ,
+            'n_estimators':[400, 550] ,
             'verbosity':[1], 
             'silent':[0], 
             'objective':['reg:squarederror' ],  #Cet objectif est l'objectif RMSE classique pour des regressions
@@ -34,7 +34,7 @@ xgb_grid = {'max_depth':[7, 9, 11],
             'n_jobs':[-1], 
             'nthread':[-1], 
             'gamma':[0.05],  
-            'reg_alpha':[1], 
+            'reg_alpha':[0.7, 1], 
             'reg_lambda':[1, 1.5],
             'importance_type':['gain']}
 
