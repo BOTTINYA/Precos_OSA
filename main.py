@@ -183,10 +183,11 @@ else:
     
     
     #Construction du DataFrame des preco
-    #identification_columns.append('VentesUC')          #Je n'tutilise cette ligne de code uniquement pour tester les perf du code en phase de test
+    #identification_columns.append('VentesUC')          #Je n'utilise cette ligne de code uniquement pour tester les perf du code en phase de test
     
     Forecast = pd.concat([F_encoded[identification_columns],df_pred],axis = 1)
 
+    Forecast = predictions.boost_magasins_auchan(Forecast)     #On boost artificiellement les magasins Auchan qu'on sous engage selon l'analyse de Yannick et Jeremy
     
     Forecast.to_csv('../Precos_OSA/data/Precos_Brutes_'+nom_ope+'.csv')
     #exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
