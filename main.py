@@ -189,6 +189,14 @@ else:
 
     Forecast = predictions.boost_magasins_auchan(Forecast)     #On boost artificiellement les magasins Auchan qu'on sous engage selon l'analyse de Yannick et Jeremy
     
+    #Mise en forme des colonnes selon besoins Hana (26/02/2020)
+    cols = ['Annee','NomOpe', 'CodeSAPProduit', 'EANProduit', 'NomProduit', 'NomMagasin', 'PreconisationVentesUC']
+    all_cols = Forecast.columns.to_list()
+    
+    cols = cols + list(set(all_cols)-set(cols))
+    Forecast = Forecast[cols]
+    
+    
     Forecast.to_csv('../Precos_OSA/data/Precos_Brutes_'+nom_ope+'.csv')
     #exportation.BigQuery_exportation(Precos, bigquery_dataset_name, bigquery_table_name)
     
