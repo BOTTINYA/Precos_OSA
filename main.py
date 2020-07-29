@@ -190,10 +190,10 @@ else:
     Forecast = predictions.boost_magasins_auchan(Forecast)     #On boost artificiellement les magasins Auchan qu'on sous engage selon l'analyse de Yannick et Jeremy
     
     #Mise en forme des colonnes selon besoins Hana (26/02/2020)
-    cols = ['Annee','NomOpe', 'CodeSAPProduit', 'EANProduit', 'NomProduit', 'NomMagasin', 'PreconisationVentesUC']
+    cols = ['Annee','NomOpe', 'CodeSAPProduit', 'EANProduit', 'NomProduit', 'NomMagasin', 'PreconisationVentesUC', 'CodeMagasin']
     all_cols = Forecast.columns.to_list()
     
-    cols = cols + list(set(all_cols)-set(cols))
+    #cols = cols + list(set(all_cols)-set(cols))
     Forecast = Forecast[cols]
     
     
