@@ -103,7 +103,7 @@ if Training_of_model.upper() == 'Y':
         fig(figsize =(20,30))
         i=0
         for col in final_training_columns:
-            plt.subplot(7, 4, i + 1)
+            plt.subplot(7, 5, i + 1)
             plt.title(col)
             sns.distplot(df_encoded[[col]],  kde_kws={'bw':0.3})
             i+=1
@@ -190,7 +190,7 @@ else:
     Forecast = predictions.boost_magasins_auchan(Forecast)     #On boost artificiellement les magasins Auchan qu'on sous engage selon l'analyse de Yannick et Jeremy
     
     #Mise en forme des colonnes selon besoins Hana (26/02/2020)
-    cols = ['Annee','NomOpe', 'CodeSAPProduit', 'EANProduit', 'NomProduit', 'NomMagasin', 'PreconisationVentesUC', 'CodeMagasin']
+    cols = ['Annee','NomOpe', 'CodeSAPProduit', 'EANProduit', 'NomProduit', 'NomMagasin', 'PreconisationVentesUC', 'DateDebutConso', 'CodeMagasin']
     all_cols = Forecast.columns.to_list()
     
     #cols = cols + list(set(all_cols)-set(cols))

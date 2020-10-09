@@ -18,9 +18,15 @@ import matplotlib.pyplot as plt
 from google.cloud import bigquery
 import google.datalab.bigquery as bq
 
+import google.auth
 
-client = bigquery.Client()
+credentials, project = google.auth.default(scopes=[
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/bigquery',
+])
 
+#client = bigquery.Client(project='project', credentials=credentials)
+client = bigquery.Client(project='osa-2019', credentials=credentials)
 
 
 class data_extraction:

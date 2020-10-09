@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import operator
 import settings
+import string
 
 from time import time
 
@@ -17,9 +18,15 @@ import matplotlib.pyplot as plt
 from google.cloud import bigquery
 import google.datalab.bigquery as bq
 
+import google.auth
 
-client = bigquery.Client()
+credentials, project = google.auth.default(scopes=[
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/bigquery',
+])
 
+#client = bigquery.Client(project='project', credentials=credentials)
+client = bigquery.Client(project='osa-2019', credentials=credentials)
 
 
 class data_extraction:
@@ -34,7 +41,8 @@ class data_extraction:
             
             print('\nloading training data from csv file...')
             #Charge la BDD Promo à partir du csv
-            df = pd.read_csv('../Precos_OSA/data/BDD_Promo.csv', sep=';')
+            df = pd.read_csv('../Precos_OSA/data/BDD_Promos_V2.csv', sep=',')
+            df = df.drop(['Unnamed: 0'], axis = 1)
             
         elif data_source == 'BigQuery':
             print('\nQuerying BigQuery for training data...')
@@ -43,8 +51,10 @@ class data_extraction:
             SELECT DISTINCT
                 * 
             FROM 
-                `osa-2019.Performance_Promos.HistoriquePromos` 
-            WHERE VentesUC > 0 AND Enseigne = UPPER('"""+enseigne+"""')"""
+                `osa-2019.Performance_Promos.HistoriquePromoPourPredictions`
+            WHERE 
+                VentesUC > 0
+                AND Enseigne LIKE UPPER('"""+enseigne+"""')""" 
             
 
             start_time = time()
@@ -74,9 +84,40 @@ class data_extraction:
             #Charge la BDD Promo à partir du csv
             df = pd.read_csv('../Precos_OSA/data/Forecast.csv', sep=';')
         elif data_source == 'BigQuery':
-            raise ValueError('Le code pour sourcing de la BDD Promo depuis BigQuery n est pas encore écrit. Veuillez utiliser csv en argument de l objet data_extraction pour le moment.')
+            nom_ope = input("Sur quelle OP voulez-vous réaliser des précos ? (Entrer le nom de l'OP à l'identique de Recas CAS)")
+            date_debut_conso = input("Quelle est la date de début de conso de l'OP ? (Entrer la date au format AAAA-MM-JJ)")
+            status_promo = input("Voulez-vous faire des précos sur les codes Acceptés uniquement ? Ou sur les codes proposés également ? (Acceptés uniquement Y / n Proposés également)")
+            
+            if status_promo.upper() == 'Y':
+                confirmation = '%Acceptée%'
+            else:
+                confirmation = '%%'
+            
+            print('\nQuerying BigQuery for prediction data...')
+
+            sql = """
+            SELECT DISTINCT
+                * 
+            FROM 
+                `osa-2019.Performance_Promos.HistoriquePromoPourPredictions` 
+            WHERE 
+                NomOpe LIKE '"""+nom_ope+"""'
+                AND DateDebutConso = '"""+date_debut_conso+"""'
+                AND Enseigne LIKE UPPER('"""+enseigne+"""')
+                AND Confirmation LIKE '"""+confirmation+"""'"""
+                
+            
+
+            start_time = time()
+
+            df = client.query(sql).to_dataframe()         #Interrogation de BigQuery 
+            
+            df.to_csv('../Precos_OSA/data/Forecast.csv')
+
+            print('Querying and loading time = {:0.2f} s '.format(time() - start_time))
+            print('Request finished\n')
         else:
             raise ValueError('Veuillez utiliser csv ou BigQuery en argument de l objet data_extraction')
         
-        return df
+        return df, nom_ope
 

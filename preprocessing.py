@@ -74,6 +74,7 @@ class training_set_preprocessing:
     def data_forward_transform(df):
         print('Transforming skewed columns for Normal distribution approximation...')
         columns = df.columns
+        date_column = ['DateDebutConso']
         columns_to_log_transform = ['CAMagasin',
                                     'BaselineOSA',
                                     'DureeEnJoursDepuisLancement',
@@ -93,6 +94,15 @@ class training_set_preprocessing:
         
         for col in (set(columns_to_log_transform) & set (columns)):
             df[col+'_log_transformed'] = np.log(df[col]+1)
+        
+        for col in (set(date_column)):
+            df['annee'] = pd.DatetimeIndex(df['DateDebutConso']).year
+            df['mois'] = pd.DatetimeIndex(df['DateDebutConso']).month
+            df['semaine'] = pd.DatetimeIndex(df['DateDebutConso']).week
+            df['JourDeAnnee'] = pd.DatetimeIndex(df['DateDebutConso']).dayofyear
+            df['trimestre'] = pd.DatetimeIndex(df['DateDebutConso']).quarter
+            df['cos(semaine*2pi/52)'] = np.cos(pd.DatetimeIndex(df['DateDebutConso']).week*2*np.pi/52)
+       
         return df
         
         

@@ -93,8 +93,9 @@ def train_validate_model(df,enseigne):
 
     watchlist = [(dtrain, 'train'), (dvalid, 'eval')]
     
+    htuning = 'n'
+    #htuning = input('Voulez-vous faire un tuning automatique des Hyperparamètres du modèle ? (Y/n)' )
     
-    htuning = input('Voulez-vous faire un tuning automatique des Hyperparamètres du modèle ? (Y/n)')
     if htuning.upper() == 'Y':
         #Model tuning
         print("Performing Grid Search on the model")
@@ -106,6 +107,7 @@ def train_validate_model(df,enseigne):
         print('\nBest found Parameters for model are :')
         print(reg.best_params_)
         
+        #Model training
         gbm = xgb.train(reg.best_params_, dtrain, num_boost_round = parameters.num_boost_round, evals=watchlist, early_stopping_rounds=parameters.early_stopping_rounds, verbose_eval=50)
         functions.save_obj(reg.best_params_, 'xgb_params_'+enseigne )
         print('Hyperparameters saved in local directory as "xgb_params_<enseigne>.pkl". They are loaded in parameters.py for ulterior use')
@@ -161,7 +163,7 @@ def train_validate_model(df,enseigne):
     
     
     # ------------------- Perform SHAP Analysis on training data --------------------
-    X_shap, _, y_shap, _ = train_test_split(X_train, y_train, test_size = 0.9)  #reduction du nombre de lignes a analyser
+    X_shap, _, y_shap, _ = train_test_split(X_train, y_train, test_size = 0.95)  #reduction du nombre de lignes a analyser
     SHAP_Analysis(gbm, X_shap, y_shap, feature_names)
     
 
