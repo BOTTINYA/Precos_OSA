@@ -11,7 +11,7 @@ Created on 09/09/2019
 """
 
 from google.cloud import bigquery, storage
-import google.datalab.bigquery as bq
+
 from time import time
 import os
 
@@ -27,12 +27,12 @@ def BigQuery_exportation(df, bigquery_dataset_name, bigquery_table_name):
     bigquery_table_name = bigquery_table_name
 
     # Define BigQuery dataset and table
-    dataset = bq.Dataset(bigquery_dataset_name)
-    table = bq.Table(bigquery_dataset_name + '.' + bigquery_table_name)
+    dataset = bigquery.Dataset(bigquery_dataset_name)
+    table = bigquery.Table(bigquery_dataset_name + '.' + bigquery_table_name)
 
 
     # Create or overwrite the existing table if it exists
-    table_schema = bq.Schema.from_data(df)
+    table_schema = bigquery.Schema.from_data(df)
     table.create(schema = table_schema, overwrite = True)
 
     # Write the DataFrame to a BigQuery table
