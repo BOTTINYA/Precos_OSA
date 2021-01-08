@@ -1,0 +1,10 @@
+#Package dependencies
+
+pandas
+numpy
+scikit-learn
+seaborn
+joblib
+shap
+xgboost
+google
