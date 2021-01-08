@@ -47,7 +47,7 @@ class training_set_preprocessing:
                            'EANProduit', 
                            'NomProduit',
                            'Mecanique',
-                           'MaxVentesEANPasseeEnUC',
+                           #'MaxVentesEANPasseeEnUC',
                            'UmbrellaBrand']
         
         if 'AUCHAN' in df.Enseigne.unique():
