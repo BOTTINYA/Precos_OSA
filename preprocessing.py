@@ -41,7 +41,7 @@ class training_set_preprocessing:
                            'DirectionRegionale', 
                            'ZoneCVR', 
                            'SecteurCM', 
-                           'NomMagasin',
+                           'NomMagasinMicroStrat',
                            'CodeMagasin', 
                            'CodeSAPProduit',
                            'EANProduit', 

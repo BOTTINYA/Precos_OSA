@@ -176,6 +176,8 @@ else:
     
     
     #Perform predictions
+    print(final_training_columns)
+    
     y_pred = predictions.perform_predictions(F_encoded,final_training_columns,gbm)
     y_pred = np.int_(np.round_(y_pred, decimals = 0))
     
@@ -191,7 +193,7 @@ else:
     Forecast = predictions.boost_magasins_auchan(Forecast)     #On boost artificiellement les magasins Auchan qu'on sous engage selon l'analyse de Yannick et Jeremy
     
     #Mise en forme des colonnes selon besoins Hana (26/02/2020)
-    cols = ['Annee','NomOpe', 'CodeSAPProduit', 'EANProduit', 'NomProduit', 'NomMagasin', 'PreconisationVentesUC', 'DateDebutConso', 'CodeMagasin']
+    cols = ['Annee','NomOpe', 'CodeSAPProduit', 'EANProduit', 'NomProduit', 'NomMagasinMicroStrat', 'PreconisationVentesUC', 'DateDebutConso', 'CodeMagasin']
     all_cols = Forecast.columns.to_list()
     
     #cols = cols + list(set(all_cols)-set(cols))
